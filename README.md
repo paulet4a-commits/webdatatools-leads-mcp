@@ -1,0 +1,62 @@
+# WebDataTools Leads, jobs & company data MCP server
+`webdatatools-leads-mcp`
+
+An MCP server with 8 leads, jobs & company data tools for AI agents — Claude Desktop, Cursor, Cline or any MCP client. Company profiles from a domain, hiring signals from ATS boards, Y Combinator companies, Wikidata enrichment, e-mail validation, OpenStreetMap places, market quotes and remote jobs.
+
+**This server uses *your own* Apify API token.** Every tool call runs a [WebDataTools](https://apify.com/webdatatools) Actor under your Apify account and is billed to your Apify credit — pay per result, the price is in each tool description. Your token is only sent to Apify's API.
+
+## Quick start
+
+Requires Node.js 18+.
+
+```bash
+APIFY_TOKEN=apify_api_... npx -y github:paulet4a-commits/webdatatools-leads-mcp
+```
+
+Get a free token (the free plan includes monthly credit): https://console.apify.com/settings/integrations
+
+## Claude Desktop / Cursor
+
+Add this to `claude_desktop_config.json` (Claude Desktop) or `.cursor/mcp.json` (Cursor):
+
+```json
+{
+  "mcpServers": {
+    "webdatatools-leads": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "github:paulet4a-commits/webdatatools-leads-mcp"
+      ],
+      "env": {
+        "APIFY_TOKEN": "apify_api_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+      }
+    }
+  }
+}
+```
+
+## Tools (8)
+
+| Tool | What it does | Price (free plan) | Backing Actor |
+|---|---|---|---|
+| `company_360` | Company 360: full company profile from a domain | $0.05 / company | [Actor](https://apify.com/webdatatools/company-360) |
+| `hiring_signals` | Hiring Signals Scraper (Greenhouse, Lever, Ashby, Workable) | $0.002 / result | [Actor](https://apify.com/webdatatools/hiring-signals) |
+| `yc_companies_scraper` | Y Combinator Companies & Founders Scraper | $0.002 / result | [Actor](https://apify.com/webdatatools/yc-companies-scraper) |
+| `wikidata_entity_enrichment` | Wikidata Entity & Company Enrichment (facts, IDs, links) | $0.001 / result | [Actor](https://apify.com/webdatatools/wikidata-entity-enrichment) |
+| `email_validator` | Email Validator & Verifier — Bulk Email Check | $0.0005 / email | [Actor](https://apify.com/webdatatools/email-validator) |
+| `overpass_poi_extractor` | OpenStreetMap POI Extractor (Overpass API: shops, amenities) | $0.0005 / place | [Actor](https://apify.com/webdatatools/overpass-poi-extractor) |
+| `market_quotes` | Stock, Crypto & FX Quotes | $0.001 / Quote | [Actor](https://apify.com/webdatatools/market-quotes) |
+| `remote_jobs_aggregator` | Remote Jobs Aggregator (RemoteOK, WWR, Hacker News) | $0.001 / Job | [Actor](https://apify.com/webdatatools/remote-jobs-aggregator) |
+
+## More WebDataTools MCP servers
+
+- [webdatatools-mcp-server](https://github.com/paulet4a-commits/webdatatools-mcp-server) — the 10 most popular tools in one server
+- [webdatatools-domain-mcp](https://github.com/paulet4a-commits/webdatatools-domain-mcp) — Domain & website intelligence
+- [webdatatools-rag-mcp](https://github.com/paulet4a-commits/webdatatools-rag-mcp) — Web content for AI & RAG
+- [webdatatools-social-mcp](https://github.com/paulet4a-commits/webdatatools-social-mcp) — Search, video & social data
+- [webdatatools-dev-mcp](https://github.com/paulet4a-commits/webdatatools-dev-mcp) — Developer, app & research data
+
+## License
+
+MIT

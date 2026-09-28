@@ -1,0 +1,497 @@
+[
+  {
+    "name": "company_360",
+    "actor": "webdatatools~company-360",
+    "title": "Company 360: full company profile from a domain",
+    "description": "Company 360 turns a domain into one rich profile row: contacts, tech stack, DNS/e-mail security, TLS/security headers, on-page SEO, hiring signals and company facts (HQ, employees, revenue, founders) merged from our own scraper suite. Billed to your own Apify account: ~$0.05 per company (Apify free-plan price, lower on paid plans).",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "domains": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Domains — Enter the company domains to profile, one row is returned per domain, e.g. apify.com. Full URLs and www. prefixes are accepted and stripped automatically, so you can paste a list straight out of your CRM. Example: [\"apify.com\"].",
+          "minItems": 1
+        },
+        "includeContacts": {
+          "type": "boolean",
+          "default": true,
+          "description": "Include contacts — Fetch the homepage (and a common contact-page guess) for e-mail addresses, phone numbers and social-profile links."
+        },
+        "includeTechStack": {
+          "type": "boolean",
+          "default": true,
+          "description": "Include tech stack — Call our Tech Stack Detector Actor for CMS, e-commerce platform, analytics, ad pixels, chat widget and payment providers."
+        },
+        "includeEmailSecurity": {
+          "type": "boolean",
+          "default": true,
+          "description": "Include DNS & e-mail security — Look up SPF/DMARC policy, mail provider, DNS provider, registrar and domain age directly (no sub-Actor call)."
+        },
+        "includeSecurityAudit": {
+          "type": "boolean",
+          "default": true,
+          "description": "Include security audit — Call our Domain Security Audit Actor for TLS certificate validity/expiry and a 0-100 security grade based on HTTP security headers."
+        },
+        "includeHiring": {
+          "type": "boolean",
+          "default": true,
+          "description": "Include hiring signals — Call our Hiring Signals Actor for open job counts and hiring velocity. Only returns data when the domain's ATS job board could be found under its own name (e.g. a Greenhouse/Lever/Ashby board named after the company) - most domains will not match and get a warning instead, not an error."
+        },
+        "includeCompanyFacts": {
+          "type": "boolean",
+          "default": true,
+          "description": "Include company facts — Call our Wikidata Entity Enrichment Actor for headquarters, employee count, revenue, founders, founding date and Crunchbase/LinkedIn IDs. Works best for companies with a Wikidata entry."
+        },
+        "includeSeo": {
+          "type": "boolean",
+          "default": true,
+          "description": "Include SEO audit — Call our On-Page SEO Audit Actor for the home page's 0-100 SEO score and a list of issues found."
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "domains"
+      ]
+    },
+    "arrayFields": [
+      "domains"
+    ],
+    "urlSourceFields": [],
+    "price": "$0.05 / company"
+  },
+  {
+    "name": "hiring_signals",
+    "actor": "webdatatools~hiring-signals",
+    "title": "Hiring Signals Scraper (Greenhouse, Lever, Ashby, Workable)",
+    "description": "Scrape company job postings and hiring signals from Greenhouse, Lever, Ashby and Workable job boards — one row per job, or one hiring summary per company. Billed to your own Apify account: ~$0.002 per result (Apify free-plan price, lower on paid plans).",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "companies": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "description": "Companies — Enter the companies whose job board you want to scrape. Use the ATS slug on its own, e.g. stripe, or paste a full job-board URL, e.g. https://boards.greenhouse.io/stripe, https://jobs.lever.co/spotify, https://jobs.ashbyhq.com/ashby, https://apply.workable.com/blueground/, https://jobs.smartrecruiters.com/smartrecruiters, https://bunq.recruitee.com, https://personio.jobs.personio.de, https://storytel.teamtailor.com, https://euna.bamboohr.com/careers/list or https://<tenant>.wd<N>.myworkdayjobs.com/<site>. A bare slug is probed against every board except Workday (which needs a full URL — a tenant and a site, not just a slug) and every board that actually has postings is returned. Example: [\"stripe\"]."
+        },
+        "outputMode": {
+          "type": "string",
+          "enum": [
+            "jobs",
+            "companies"
+          ],
+          "default": "jobs",
+          "description": "Output mode — Choose what one dataset row means. Pick \"One row per job\" to get every open posting (best for job aggregators and recruiters), or \"One row per company\" to get a single hiring summary per company with job counts, department and location breakdowns and a hiring-velocity score (best for sales intelligence and competitor watching). Options: jobs = One row per job; companies = One row per company (hiring summary)."
+        },
+        "maxJobsPerCompany": {
+          "type": "integer",
+          "default": 200,
+          "minimum": 1,
+          "maximum": 5000,
+          "description": "Max jobs per company — Enter how many of the newest postings to keep per company, e.g. 200. This caps both cost and row count in \"One row per job\" mode. It is deliberately ignored in \"One row per company\" mode, where the summary always counts the whole board so totals and hiring velocity stay accurate."
+        },
+        "includeDescriptions": {
+          "type": "boolean",
+          "default": false,
+          "description": "Include job descriptions — Turn this on to add the full job description as plain text (HTML stripped, truncated to 5,000 characters). Leave it off for faster, smaller runs — on Workable it also saves one extra request per job, because that board only serves descriptions from a per-job endpoint. SmartRecruiters and Workday never return a description here (their list endpoints carry no job body), regardless of this setting."
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "companies"
+      ]
+    },
+    "arrayFields": [
+      "companies"
+    ],
+    "urlSourceFields": [],
+    "price": "$0.002 / result"
+  },
+  {
+    "name": "yc_companies_scraper",
+    "actor": "webdatatools~yc-companies-scraper",
+    "title": "Y Combinator Companies & Founders Scraper",
+    "description": "Y Combinator company directory scraper — batch, industry, hiring status, one-liner, description and founder names/titles/LinkedIn/Twitter for every YC-funded startup, one row per company. Billed to your own Apify account: ~$0.002 per result (Apify free-plan price, lower on paid plans).",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "mode": {
+          "type": "string",
+          "enum": [
+            "companies",
+            "search"
+          ],
+          "default": "companies",
+          "description": "Mode — Pick \"Browse companies\" to list/filter the directory by batch, industry, status or hiring status, or \"Search by keyword\" to additionally match the query text against each company's name and description. Options: companies = Browse companies; search = Search by keyword."
+        },
+        "query": {
+          "type": "string",
+          "default": "",
+          "description": "Search text — Enter keywords to match against the company name, one-liner and description, e.g. \"AI agents\". Only used when mode is \"Search by keyword\", or as an extra filter on top of the other fields in \"Browse companies\" mode. Leave empty to skip text search."
+        },
+        "batches": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [],
+          "description": "Batches — Enter YC batch codes to keep, e.g. W25, S25, F26. Leave empty to include every batch. Codes are case-insensitive and matched exactly against the company's batch field."
+        },
+        "industries": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [],
+          "description": "Industries — Enter industry names to keep, e.g. B2B, Fintech, Healthcare. A company matches if it has at least one of the listed industries. Leave empty to include every industry."
+        },
+        "statuses": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "Active",
+              "Acquired",
+              "Public",
+              "Inactive"
+            ],
+            "enumTitles": [
+              "Active",
+              "Acquired",
+              "Public",
+              "Inactive"
+            ]
+          },
+          "default": [],
+          "description": "Company statuses — Select which company statuses to keep. Leave empty to include every status (most companies are Active). Options: Active = Active; Acquired = Acquired; Public = Public; Inactive = Inactive."
+        },
+        "isHiring": {
+          "type": "boolean",
+          "description": "Is hiring — Turn on to keep only companies currently marked as hiring on YC's directory, or leave this switch off (unset) to include both hiring and non-hiring companies. There is no third state for \"only non-hiring\" — untoggled means \"do not filter\"."
+        },
+        "maxCompanies": {
+          "type": "integer",
+          "default": 50,
+          "minimum": 1,
+          "maximum": 10000,
+          "description": "Max companies — Enter the maximum number of matching companies to return, e.g. 200. This is also the billed unit — the run stops as soon as it collects this many matches or runs out of companies to check."
+        },
+        "includeFounders": {
+          "type": "boolean",
+          "default": true,
+          "description": "Include founders — Keep this on to fetch each matched company's public YC profile page and extract founder name, title, LinkedIn and Twitter/X links. Turning it off skips one extra request per company and returns founders as null, which is much faster for large runs."
+        }
+      },
+      "additionalProperties": false
+    },
+    "arrayFields": [
+      "batches",
+      "industries",
+      "statuses"
+    ],
+    "urlSourceFields": [],
+    "price": "$0.002 / result"
+  },
+  {
+    "name": "wikidata_entity_enrichment",
+    "actor": "webdatatools~wikidata-entity-enrichment",
+    "title": "Wikidata Entity & Company Enrichment (facts, IDs, links)",
+    "description": "Wikidata Entity & Company Enrichment resolves a QID, company name, or Wikipedia URL to its Wikidata item and returns facts (country, HQ, founders, CEO, employees, revenue), identifiers (ISIN, Crunchbase, LinkedIn) and social/media links — one row per entity. Billed to your own Apify account: ~$0.001 per result (Apify free-plan price, lower on paid plans).",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "entities": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Entities — Enter a Wikidata QID (e.g. Q95), an entity name to search for (e.g. Apify), or a Wikipedia article URL (e.g. https://en.wikipedia.org/wiki/Stripe,_Inc.) — one row is returned per entity. Names are resolved via Wikidata search, so the closest match wins. Example: [\"Q95\"].",
+          "minItems": 1
+        },
+        "language": {
+          "type": "string",
+          "default": "en",
+          "description": "Language — Enter the Wikidata/Wikipedia language code to use for labels, descriptions and search, e.g. en, de, fr. Falls back to English internally when a translation is missing."
+        },
+        "entityType": {
+          "type": "string",
+          "enum": [
+            "any",
+            "company",
+            "person",
+            "place",
+            "product"
+          ],
+          "default": "any",
+          "description": "Entity type filter — When resolving a name search, prefer a candidate whose Wikidata instance-of (P31) matches this type over the plain top search result. Leave as 'any' to just take the best text match. Options: any = Any; company = Company; person = Person; place = Place; product = Product."
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "entities"
+      ]
+    },
+    "arrayFields": [
+      "entities"
+    ],
+    "urlSourceFields": [],
+    "price": "$0.001 / result"
+  },
+  {
+    "name": "email_validator",
+    "actor": "webdatatools~email-validator",
+    "title": "Email Validator & Verifier — Bulk Email Check",
+    "description": "Email Validator checks syntax, MX/A DNS records, disposable/free-provider/role classification and typo suggestions for a list of email addresses — one scored row per address, no SMTP mailbox probing. Billed to your own Apify account: ~$0.0005 per email (Apify free-plan price, lower on paid plans).",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "emails": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Emails — Enter the email addresses to validate, one row is returned per address, e.g. jane.doe@example.com. Paste straight out of a CRM export or lead list; blank lines and duplicates are ignored. Example: [\"support@apify.com\"].",
+          "minItems": 1
+        },
+        "checkMx": {
+          "type": "boolean",
+          "default": true,
+          "description": "Check MX / A records — Keep this on to look up the domain's MX records (falling back to an A record) over DNS-over-HTTPS. Turning it off skips DNS entirely and scores purely on syntax and list matches — faster, but cannot tell whether the domain can receive mail at all."
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "emails"
+      ]
+    },
+    "arrayFields": [
+      "emails"
+    ],
+    "urlSourceFields": [],
+    "price": "$0.0005 / email"
+  },
+  {
+    "name": "overpass_poi_extractor",
+    "actor": "webdatatools~overpass-poi-extractor",
+    "title": "OpenStreetMap POI Extractor (Overpass API: shops, amenities)",
+    "description": "OpenStreetMap POI Extractor returns shops, cafes, restaurants and any tagged place within a radius, a bounding box, or a named area — one row per point of interest, powered by the free Overpass API. Billed to your own Apify account: ~$0.0005 per place (Apify free-plan price, lower on paid plans).",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "mode": {
+          "type": "string",
+          "enum": [
+            "radius",
+            "bbox",
+            "area"
+          ],
+          "description": "Search mode — How to define the search area: \"radius\" around a point, \"bbox\" (a bounding box), or \"area\" (a place name resolved via Nominatim, e.g. a city or district). Options: radius = Radius around a point; bbox = Bounding box; area = Named area (city/district). Example: \"radius\".",
+          "minLength": 1
+        },
+        "latitude": {
+          "type": "number",
+          "description": "Latitude (radius mode) — Center point latitude for radius mode, e.g. 50.0755 for Prague's city centre. Ignored in bbox and area mode. Example: 50.0755."
+        },
+        "longitude": {
+          "type": "number",
+          "description": "Longitude (radius mode) — Center point longitude for radius mode, e.g. 14.4378 for Prague's city centre. Ignored in bbox and area mode. Example: 14.4378."
+        },
+        "radiusMeters": {
+          "type": "integer",
+          "default": 1000,
+          "minimum": 1,
+          "maximum": 20000,
+          "description": "Radius in meters (radius mode) — How far from the center point to search, in meters, e.g. 1000 for a 1 km radius. Larger radii return more results and take longer to query."
+        },
+        "bbox": {
+          "type": "string",
+          "description": "Bounding box (bbox mode) — Bounding box as \"south,west,north,east\" decimal degrees, e.g. \"50.05,14.35,50.13,14.55\" for central Prague. Required when Search mode is \"bbox\". Example: \"50.05,14.35,50.13,14.55\".",
+          "minLength": 1
+        },
+        "areaName": {
+          "type": "string",
+          "description": "Area name (area mode) — A place name to search inside, e.g. \"Prague, Czechia\" or \"Brooklyn, New York\". Resolved to an OpenStreetMap area via Nominatim. Required when Search mode is \"area\". Example: \"Prague, Czechia\".",
+          "minLength": 1
+        },
+        "categories": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "OSM categories (key=value tags) — OpenStreetMap tags to search for, each as \"key=value\", e.g. \"amenity=cafe\" or \"shop=supermarket\". Every category is searched and merged into one result list. Example: [\"amenity=cafe\",\"amenity=restaurant\"].",
+          "minItems": 1
+        },
+        "maxResults": {
+          "type": "integer",
+          "default": 100,
+          "minimum": 1,
+          "maximum": 20000,
+          "description": "Max results — Maximum number of POIs to return, e.g. 500. Overpass results beyond this count are dropped before they are pushed to the dataset."
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "mode",
+        "categories"
+      ],
+      "anyOf": [
+        {
+          "required": [
+            "latitude",
+            "longitude"
+          ]
+        },
+        {
+          "required": [
+            "bbox"
+          ]
+        },
+        {
+          "required": [
+            "areaName"
+          ]
+        }
+      ]
+    },
+    "arrayFields": [
+      "categories"
+    ],
+    "urlSourceFields": [],
+    "price": "$0.0005 / place"
+  },
+  {
+    "name": "market_quotes",
+    "actor": "webdatatools~market-quotes",
+    "title": "Stock, Crypto & FX Quotes",
+    "description": "Live-delayed stock, ETF, index, cryptocurrency and foreign-exchange quotes in one call — price, change, day range, volume and optional history, from free public endpoints with no API key. Billed to your own Apify account: ~$0.001 per Quote (Apify free-plan price, lower on paid plans).",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "symbols": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Symbols — Enter one symbol per line: a stock/ETF/index ticker (AAPL, ^GSPC), a crypto ticker or pair (BTC, BTC-USD), or an FX pair (EUR/USD, EURUSD=X, USD/EUR). Example: [\"AAPL\",\"BTC-USD\",\"EUR/USD\"].",
+          "minItems": 1
+        },
+        "assetType": {
+          "type": "string",
+          "enum": [
+            "auto",
+            "stock",
+            "crypto",
+            "fx"
+          ],
+          "default": "auto",
+          "description": "Asset type — Choose auto to detect each symbol's type from its shape (recommended), or force every symbol in this run to be read as stock, crypto or fx. Options: auto = Auto-detect; stock = Stock / ETF / index; crypto = Cryptocurrency; fx = Foreign exchange."
+        },
+        "includeHistory": {
+          "type": "boolean",
+          "default": false,
+          "description": "Include price history — Keep this off for a lean row per symbol. Turn it on to add a history array of daily closing prices going back historyDays days."
+        },
+        "historyDays": {
+          "type": "integer",
+          "default": 30,
+          "minimum": 1,
+          "maximum": 365,
+          "description": "History days — Enter how many days of daily closes to include in history when includeHistory is on, e.g. 30."
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "symbols"
+      ]
+    },
+    "arrayFields": [
+      "symbols"
+    ],
+    "urlSourceFields": [],
+    "price": "$0.001 / Quote"
+  },
+  {
+    "name": "remote_jobs_aggregator",
+    "actor": "webdatatools~remote-jobs-aggregator",
+    "title": "Remote Jobs Aggregator (RemoteOK, WWR, Hacker News)",
+    "description": "Merge and de-duplicate remote job listings from RemoteOK, We Work Remotely and Hacker News' Who is Hiring thread into one clean row per job — title, company, salary, tags and apply link. Billed to your own Apify account: ~$0.001 per Job (Apify free-plan price, lower on paid plans).",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "sources": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "remoteok",
+              "weworkremotely",
+              "hackernews"
+            ],
+            "enumTitles": [
+              "RemoteOK",
+              "We Work Remotely",
+              "Hacker News (Who is hiring?)"
+            ]
+          },
+          "default": [
+            "remoteok",
+            "weworkremotely",
+            "hackernews"
+          ],
+          "description": "Feeds to aggregate — Choose which public feeds to merge. remoteok reads RemoteOK's JSON API, weworkremotely reads its main RSS feed, and hackernews reads the current month's \"Who is hiring?\" thread on Hacker News. Options: remoteok = RemoteOK; weworkremotely = We Work Remotely; hackernews = Hacker News (Who is hiring?)."
+        },
+        "keywords": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [],
+          "description": "Keywords (optional) — Enter words or phrases to keep only matching jobs, e.g. python, remote react. Matching is case-insensitive against the job title, company name and tags. Leave empty to keep every job."
+        },
+        "maxJobs": {
+          "type": "integer",
+          "default": 100,
+          "minimum": 1,
+          "maximum": 2000,
+          "description": "Max jobs — Enter the maximum number of job rows to return after merging and de-duplicating every feed, e.g. 100."
+        },
+        "postedWithinDays": {
+          "type": "integer",
+          "default": 30,
+          "minimum": 0,
+          "maximum": 3650,
+          "description": "Posted within (days) — Enter how many days back to keep a job by its posted date, e.g. 30. A job with no known posted date is always kept. Set to 0 to disable this filter."
+        },
+        "greenhouseBoards": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [],
+          "description": "Greenhouse boards (optional) — Enter Greenhouse board slugs to fold into the same feed, e.g. stripe (from https://boards.greenhouse.io/stripe). A wrong slug returns one row with an error message instead of failing the run."
+        },
+        "ashbyBoards": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [],
+          "description": "Ashby boards (optional) — Enter Ashby job-board slugs to fold into the same feed, e.g. ashby (from https://jobs.ashbyhq.com/ashby). A wrong slug returns one row with an error message instead of failing the run."
+        }
+      },
+      "additionalProperties": false
+    },
+    "arrayFields": [
+      "sources",
+      "keywords",
+      "greenhouseBoards",
+      "ashbyBoards"
+    ],
+    "urlSourceFields": [],
+    "price": "$0.001 / Job"
+  }
+]
