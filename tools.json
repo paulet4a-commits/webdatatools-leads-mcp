@@ -1,5 +1,175 @@
 [
   {
+    "name": "google_maps_scraper",
+    "actor": "webdatatools~google-maps-scraper",
+    "title": "Google Maps Scraper",
+    "description": "Google Maps Scraper extracts places from Google Maps search: name, category, address, phone, website, rating, review count, coordinates and today's hours, in any country, no browser, $2 per 1,000 places. Billed to your own Apify account: ~$0.002 per place (Apify free-plan price, lower on paid plans).",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "searchQueries": {
+          "type": "string",
+          "description": "Search queries — Enter search queries separated by semicolon, e.g. \"dentist; coffee shop\". Aliases: query, keyword, search, searchStringsArray. Example: \"dentist\".",
+          "minLength": 1
+        },
+        "location": {
+          "type": "string",
+          "description": "Location — Enter the location (city, region, country) for the search, e.g. \"Austin, TX\". Alias: locationQuery. Example: \"Austin, TX\".",
+          "minLength": 1
+        },
+        "maxPlacesPerSearch": {
+          "type": "integer",
+          "default": 20,
+          "minimum": 1,
+          "maximum": 120,
+          "description": "Max places per search — Maximum number of places to extract per search query (default 20, max 120). Google typically returns ~120 results per query."
+        },
+        "language": {
+          "type": "string",
+          "default": "en",
+          "description": "Language — Language for search results, e.g. \"en\" for English, \"tr\" for Turkish."
+        },
+        "country": {
+          "type": "string",
+          "default": "us",
+          "description": "Country — Country code for search results (2-letter ISO code), e.g. \"us\", \"uk\", \"tr\"."
+        },
+        "minRating": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 5,
+          "description": "Minimum rating — Optional: filter places with minimum rating (0-5), e.g. 4.0."
+        },
+        "skipClosedPlaces": {
+          "type": "boolean",
+          "default": false,
+          "description": "Skip closed places — Skip places that are permanently or temporarily closed."
+        },
+        "coordinates": {
+          "type": "object",
+          "description": "Coordinates — Optional: search by coordinates instead of location name. Provide lat, lng, and radiusMeters."
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "searchQueries"
+      ],
+      "anyOf": [
+        {
+          "required": [
+            "location"
+          ]
+        },
+        {
+          "required": [
+            "coordinates"
+          ]
+        }
+      ]
+    },
+    "arrayFields": [],
+    "urlSourceFields": [],
+    "price": "$0.002 / place"
+  },
+  {
+    "name": "linkedin_jobs_scraper",
+    "actor": "webdatatools~linkedin-jobs-scraper",
+    "title": "LinkedIn Jobs Scraper",
+    "description": "LinkedIn Jobs Scraper returns public job listings from LinkedIn by keywords, location, and filters. Scrape job titles, companies, salaries, descriptions, and applicant counts from LinkedIn's public guest job search API. Billed to your own Apify account: ~$0.001 per job (Apify free-plan price, lower on paid plans).",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "keywords": {
+          "type": "string",
+          "description": "Search keywords — Job title or skills to search for, e.g. \"data analyst\". Separate several searches with a semicolon: \"python; golang\". Leave empty with a company filter to list all of a company's jobs. Example: \"software engineer\".",
+          "minLength": 1
+        },
+        "location": {
+          "type": "string",
+          "description": "Location — City, region or country, e.g. \"Berlin\", \"Austin, TX\" or \"Germany\". Leave empty to search worldwide. Example: \"United States\"."
+        },
+        "locations": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "More locations (optional) — Run the same search in several places, e.g. [\"London\", \"Manchester\"]. Combined with Location."
+        },
+        "datePosted": {
+          "type": "string",
+          "enum": [
+            "",
+            "past24h",
+            "pastWeek",
+            "pastMonth"
+          ],
+          "default": "",
+          "description": "Date Posted Filter — Filter jobs by posting date. Leave empty to include all jobs. Options:  = Any time; past24h = Past 24 hours; pastWeek = Past week; pastMonth = Past month."
+        },
+        "workType": {
+          "type": "array",
+          "items": {},
+          "default": [],
+          "description": "Work Type — Filter by work type (onsite, remote, hybrid). Leave empty to include all."
+        },
+        "experienceLevel": {
+          "type": "array",
+          "items": {},
+          "default": [],
+          "description": "Experience Level — Filter by experience level. Leave empty to include all. Valid values: internship, entry_level, associate, mid_level, senior, manager, director, executive."
+        },
+        "jobType": {
+          "type": "array",
+          "items": {},
+          "default": [],
+          "description": "Job Type — Filter by job type (full-time, part-time, contract, temporary, internship, volunteer). Leave empty to include all."
+        },
+        "maxJobs": {
+          "type": "integer",
+          "default": 25,
+          "minimum": 1,
+          "maximum": 1000,
+          "description": "Maximum jobs to scrape — Maximum number of jobs to scrape, e.g. 100. LinkedIn search results are capped at ~1,000 total."
+        },
+        "includeDescription": {
+          "type": "boolean",
+          "default": true,
+          "description": "Include job descriptions — Fetch full job descriptions (requires extra API calls). Leave unchecked to skip descriptions."
+        },
+        "searchUrls": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Search URLs — Alternative: paste LinkedIn job search URLs (e.g., https://www.linkedin.com/jobs/search/?keywords=python&location=USA). Parameters will be mapped to the guest API. Example: [].",
+          "minItems": 1
+        }
+      },
+      "additionalProperties": false,
+      "anyOf": [
+        {
+          "required": [
+            "keywords"
+          ]
+        },
+        {
+          "required": [
+            "searchUrls"
+          ]
+        }
+      ]
+    },
+    "arrayFields": [
+      "locations",
+      "workType",
+      "experienceLevel",
+      "jobType",
+      "searchUrls"
+    ],
+    "urlSourceFields": [],
+    "price": "$0.001 / job"
+  },
+  {
     "name": "company_360",
     "actor": "webdatatools~company-360",
     "title": "Company 360: full company profile from a domain",

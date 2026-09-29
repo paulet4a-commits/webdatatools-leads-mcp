@@ -1,7 +1,7 @@
 # WebDataTools Leads, jobs & company data MCP server
 `webdatatools-leads-mcp`
 
-An MCP server with 8 leads, jobs & company data tools for AI agents — Claude Desktop, Cursor, Cline or any MCP client. Company profiles from a domain, hiring signals from ATS boards, Y Combinator companies, Wikidata enrichment, e-mail validation, OpenStreetMap places, market quotes and remote jobs.
+An MCP server with 10 leads, jobs & company data tools for AI agents — Claude Desktop, Cursor, Cline or any MCP client. Company profiles from a domain, hiring signals from ATS boards, Y Combinator companies, Wikidata enrichment, e-mail validation, OpenStreetMap places, market quotes and remote jobs.
 
 **This server uses *your own* Apify API token.** Every tool call runs a [WebDataTools](https://apify.com/webdatatools) Actor under your Apify account and is billed to your Apify credit — pay per result, the price is in each tool description. Your token is only sent to Apify's API.
 
@@ -36,10 +36,12 @@ Add this to `claude_desktop_config.json` (Claude Desktop) or `.cursor/mcp.json` 
 }
 ```
 
-## Tools (8)
+## Tools (10)
 
 | Tool | What it does | Price (free plan) | Backing Actor |
 |---|---|---|---|
+| `google_maps_scraper` | Google Maps Scraper | $0.002 / place | [Actor](https://apify.com/webdatatools/google-maps-scraper) |
+| `linkedin_jobs_scraper` | LinkedIn Jobs Scraper | $0.001 / job | [Actor](https://apify.com/webdatatools/linkedin-jobs-scraper) |
 | `company_360` | Company 360: full company profile from a domain | $0.05 / company | [Actor](https://apify.com/webdatatools/company-360) |
 | `hiring_signals` | Hiring Signals Scraper (Greenhouse, Lever, Ashby, Workable) | $0.002 / result | [Actor](https://apify.com/webdatatools/hiring-signals) |
 | `yc_companies_scraper` | Y Combinator Companies & Founders Scraper | $0.002 / result | [Actor](https://apify.com/webdatatools/yc-companies-scraper) |
