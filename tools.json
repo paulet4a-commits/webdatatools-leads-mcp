@@ -663,5 +663,153 @@
     ],
     "urlSourceFields": [],
     "price": "$0.001 / Job"
+  },
+  {
+    "name": "stepstone_scraper",
+    "actor": "webdatatools~stepstone-scraper",
+    "title": "StepStone Scraper (Germany, Austria, Belgium Jobs)",
+    "description": "Scrape StepStone job listings in Germany, Austria and Belgium by keyword, location and radius, or by search URL: job title, company, logo, location, date posted, labels, skills, description snippet, quick-apply and sponsored flags. Billed to your own Apify account: ~$0.001 per job (Apify free-plan price, lower on paid plans).",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "keywords": {
+          "type": "string",
+          "description": "Keywords — Job title, skill or company, several separated by `;` (e.g. `python; data analyst; Pflegefachkraft`). Example: \"python\"."
+        },
+        "location": {
+          "type": "string",
+          "description": "Location — Optional city or region, e.g. `Berlin`, `München`, `Wien`."
+        },
+        "radius": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 200,
+          "description": "Radius (km) — Distance around the location."
+        },
+        "country": {
+          "type": "string",
+          "enum": [
+            "de",
+            "at",
+            "be"
+          ],
+          "default": "de",
+          "description": "StepStone site — Which StepStone site to search. Options: de = Germany (stepstone.de); at = Austria (stepstone.at); be = Belgium (stepstone.be)."
+        },
+        "sortBy": {
+          "type": "string",
+          "enum": [
+            "relevance",
+            "date"
+          ],
+          "default": "relevance",
+          "description": "Sort by — Relevance (StepStone default) or newest first. Options: relevance = Relevance; date = Newest first."
+        },
+        "searchUrls": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "StepStone search URLs — Optional: search URLs copied from stepstone.de/.at/.be with your filters (salary, experience, contract type, home office). They are paged as they are."
+        },
+        "maxJobs": {
+          "type": "integer",
+          "default": 100,
+          "minimum": 1,
+          "maximum": 2000,
+          "description": "Max jobs per search — For each keyword or URL (25 jobs per page)."
+        }
+      },
+      "additionalProperties": false
+    },
+    "arrayFields": [
+      "searchUrls"
+    ],
+    "urlSourceFields": [],
+    "price": "$0.001 / job"
+  },
+  {
+    "name": "zillow_scraper",
+    "actor": "webdatatools~zillow-scraper",
+    "title": "Zillow Scraper (Homes for Sale, Rent & Sold, Zestimates)",
+    "description": "Scrape Zillow search results for any city, ZIP or map search: price, address, coordinates, beds, baths, square feet, lot size, home type, days on Zillow, Zestimate and rent Zestimate, tax value, broker, photos, rental building units, sold dates. Billed to your own Apify account: ~$0.001 per home (Apify free-plan price, lower on paid plans).",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "locations": {
+          "type": "string",
+          "description": "Locations — City, ZIP code, neighborhood or county, several separated by `;` (e.g. `Austin, TX; 90210; Brooklyn, NY`). Example: \"Austin, TX\"."
+        },
+        "listingType": {
+          "type": "string",
+          "enum": [
+            "sale",
+            "rent",
+            "sold"
+          ],
+          "default": "sale",
+          "description": "Listing type — For locations: homes for sale, for rent, or recently sold. Options: sale = For sale; rent = For rent; sold = Recently sold."
+        },
+        "searchUrls": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Zillow search URLs — Optional: search URLs copied from zillow.com with your filters (price, beds, home type, map area). They are paged as they are."
+        },
+        "sortBy": {
+          "type": "string",
+          "enum": [
+            "relevance",
+            "newest",
+            "price_low",
+            "price_high",
+            "beds",
+            "baths",
+            "size",
+            "lot"
+          ],
+          "default": "relevance",
+          "description": "Sort by — For locations: Zillow order of the results. Options: relevance = Homes for you; newest = Newest; price_low = Price (low to high); price_high = Price (high to low); beds = Bedrooms; baths = Bathrooms; size = Square feet; lot = Lot size."
+        },
+        "maxListings": {
+          "type": "integer",
+          "default": 100,
+          "minimum": 1,
+          "maximum": 1000,
+          "description": "Max listings per search — For each location or URL. Zillow shows at most about 820 homes (20 pages) per search; split big areas by ZIP code."
+        }
+      },
+      "additionalProperties": false
+    },
+    "arrayFields": [
+      "searchUrls"
+    ],
+    "urlSourceFields": [],
+    "price": "$0.001 / home"
+  },
+  {
+    "name": "zillow_detail_scraper",
+    "actor": "webdatatools~zillow-detail-scraper",
+    "title": "Zillow Home Details Scraper (Description, Photos, History)",
+    "description": "Get full Zillow property details by URL or zpid: description, year built, price per sq ft, HOA fee, tax rate, parking, all photos, price history, Zestimate and rent Zestimate, page views and saves, days on Zillow, MLS id, listing agent and brokerage. Billed to your own Apify account: ~$0.003 per home (Apify free-plan price, lower on paid plans).",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "homes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Homes — Zillow home URLs (`https://www.zillow.com/homedetails/…_zpid/`) or zpids (`29412534`). Example: [\"https://www.zillow.com/homedetails/500-Denson-Dr-Austin-TX-78752/29412534_zpid/\"]."
+        }
+      },
+      "additionalProperties": false
+    },
+    "arrayFields": [
+      "homes"
+    ],
+    "urlSourceFields": [],
+    "price": "$0.003 / home"
   }
 ]
