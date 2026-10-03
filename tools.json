@@ -1,5 +1,53 @@
 [
   {
+    "name": "career_site_jobs_api",
+    "actor": "webdatatools~career-site-jobs-api",
+    "title": "Career Site Jobs API (Greenhouse, Lever, Ashby, Workday +1)",
+    "description": "Career Site Jobs API finds which ATS a company uses (Greenhouse, Lever, Ashby, SmartRecruiters, Workday) from its domain or name and returns its open jobs in one unified format, $3 per 1,000 jobs. Billed to your own Apify account: ~$0.003 per job (Apify free-plan price, lower on paid plans).",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "companies": {
+          "type": "string",
+          "description": "Companies — Company domains, names or careers/ATS URLs, separated by ;. e.g. \"stripe.com; notion.so; https://nvidia.wd5.myworkdayjobs.com/NVIDIAExternalCareerSite\". Workday companies need their myworkdayjobs.com URL. Example: \"stripe.com; ramp.com; palantir.com\"."
+        },
+        "company": {
+          "type": "string",
+          "description": "Company (singular alias) — Single company name/domain (alternative to 'companies') Example: \"\"."
+        },
+        "keywords": {
+          "type": "string",
+          "description": "Keywords — Keep jobs whose title/department/team contains one of these words, separated by ;. e.g. \"engineer; data\". Example: \"\"."
+        },
+        "location": {
+          "type": "string",
+          "description": "Location — Job location filter. Example: San Francisco; Remote Example: \"\"."
+        },
+        "remoteOnly": {
+          "type": "boolean",
+          "default": false,
+          "description": "Remote Only — Filter to remote jobs only"
+        },
+        "includeDescription": {
+          "type": "boolean",
+          "default": true,
+          "description": "Include Job Descriptions — Include the full job description text (default on)."
+        },
+        "maxJobsPerCompany": {
+          "type": "integer",
+          "default": 25,
+          "minimum": 1,
+          "maximum": 500,
+          "description": "Max Jobs per Company — Maximum number of jobs to fetch per company (default 25)"
+        }
+      },
+      "additionalProperties": false
+    },
+    "arrayFields": [],
+    "urlSourceFields": [],
+    "price": "$0.003 / job"
+  },
+  {
     "name": "google_maps_scraper",
     "actor": "webdatatools~google-maps-scraper",
     "title": "Google Maps Scraper",
@@ -727,6 +775,75 @@
     ],
     "urlSourceFields": [],
     "price": "$0.001 / job"
+  },
+  {
+    "name": "naukri_jobs_scraper",
+    "actor": "webdatatools~naukri-jobs-scraper",
+    "title": "Naukri Jobs Scraper (Salary, Skills, Company Rating)",
+    "description": "Scrape Naukri.com job listings by keyword and city or from any search URL: title, company, salary range, experience, skills, work mode, posting date and AmbitionBox company rating. Real browser, no login, pay per job. Billed to your own Apify account: ~$0.0008 per job (Apify free-plan price, lower on paid plans).",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "keywords": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Keywords — Job titles, skills or companies to search for, one per line, e.g. python developer. Each keyword is searched in every location below. Example: [\"python developer\"]."
+        },
+        "locations": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Locations — Optional. Cities or regions, one per line, e.g. bengaluru, pune, delhi ncr. Leave empty to search all of India. Example: [\"bengaluru\"]."
+        },
+        "startUrls": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Naukri search URLs — Optional. Paste search result URLs from naukri.com, e.g. https://www.naukri.com/java-jobs-in-pune. Pagination is handled for you."
+        },
+        "maxJobsPerSearch": {
+          "type": "integer",
+          "default": 100,
+          "minimum": 1,
+          "maximum": 5000,
+          "description": "Max jobs per search — Stop after this many jobs for each keyword-location pair or URL, e.g. 100. Each job is one billed result. Naukri shows 20 jobs per page."
+        },
+        "experience": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 30,
+          "description": "Experience (years) — Optional. Only jobs that accept this many years of experience, e.g. 3."
+        },
+        "jobAge": {
+          "type": "string",
+          "enum": [
+            "1",
+            "3",
+            "7",
+            "15",
+            "30"
+          ],
+          "description": "Posted within — Optional. Only jobs posted within the last N days. Options: 1 = Last 24 hours; 3 = Last 3 days; 7 = Last 7 days; 15 = Last 15 days; 30 = Last 30 days."
+        },
+        "debug": {
+          "type": "boolean",
+          "default": false,
+          "description": "Save raw API responses — Store each page's raw search API response in the key-value store, for troubleshooting."
+        }
+      },
+      "additionalProperties": false
+    },
+    "arrayFields": [
+      "keywords",
+      "locations",
+      "startUrls"
+    ],
+    "urlSourceFields": [],
+    "price": "$0.0008 / job"
   },
   {
     "name": "zillow_scraper",
