@@ -241,7 +241,7 @@
         "includeTechStack": {
           "type": "boolean",
           "default": true,
-          "description": "Include tech stack — Call our Tech Stack Detector Actor for CMS, e-commerce platform, analytics, ad pixels, chat widget and payment providers."
+          "description": "Include tech stack — Detect the CMS, e-commerce platform, analytics, ad pixels, chat widget and payment providers from the homepage and contact page. Runs inside this Actor — no extra charge."
         },
         "includeEmailSecurity": {
           "type": "boolean",
@@ -251,22 +251,22 @@
         "includeSecurityAudit": {
           "type": "boolean",
           "default": true,
-          "description": "Include security audit — Call our Domain Security Audit Actor for TLS certificate validity/expiry and a 0-100 security grade based on HTTP security headers."
+          "description": "Include security audit — Call our Domain Security Audit Actor for TLS certificate validity/expiry and a 0-100 security grade based on HTTP security headers. Runs as a separate Actor on your account and is billed separately at that Actor's price (about $0.005 per company)."
         },
         "includeHiring": {
           "type": "boolean",
           "default": true,
-          "description": "Include hiring signals — Call our Hiring Signals Actor for open job counts and hiring velocity. Only returns data when the domain's ATS job board could be found under its own name (e.g. a Greenhouse/Lever/Ashby board named after the company) - most domains will not match and get a warning instead, not an error."
+          "description": "Include hiring signals — Call our Hiring Signals Actor for open job counts and hiring velocity. Only returns data when the domain's ATS job board could be found under its own name (e.g. a Greenhouse/Lever/Ashby board named after the company) - most domains will not match and get a warning instead, not an error. Runs as a separate Actor on your account and is billed separately at that Actor's price (about $0.002-0.004 per company)."
         },
         "includeCompanyFacts": {
           "type": "boolean",
           "default": true,
-          "description": "Include company facts — Call our Wikidata Entity Enrichment Actor for headquarters, employee count, revenue, founders, founding date and Crunchbase/LinkedIn IDs. Works best for companies with a Wikidata entry."
+          "description": "Include company facts — Call our Wikidata Entity Enrichment Actor for headquarters, employee count, revenue, founders, founding date and Crunchbase/LinkedIn IDs. Works best for companies with a Wikidata entry. Runs as a separate Actor on your account and is billed separately at that Actor's price (about $0.001 per company)."
         },
         "includeSeo": {
           "type": "boolean",
           "default": true,
-          "description": "Include SEO audit — Call our On-Page SEO Audit Actor for the home page's 0-100 SEO score and a list of issues found."
+          "description": "Include SEO audit — Call our On-Page SEO Audit Actor for the home page's 0-100 SEO score and a list of issues found. Runs as a separate Actor on your account and is billed separately at that Actor's price (about $0.002 per company)."
         }
       },
       "additionalProperties": false,
@@ -711,6 +711,107 @@
     ],
     "urlSourceFields": [],
     "price": "$0.001 / Job"
+  },
+  {
+    "name": "seek_jobs_scraper",
+    "actor": "webdatatools~seek-jobs-scraper",
+    "title": "Seek Jobs Scraper (Australia & New Zealand)",
+    "description": "Scrape job listings from Seek.com.au and Seek.co.nz. Extract job details including title, company, location, salary, work type, and description. Billed to your own Apify account: ~$0.001 per job (Apify free-plan price, lower on paid plans).",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "keywords": {
+          "type": "string",
+          "description": "Keywords — Job search keywords, separated by semicolons (e.g. 'data analyst; machine learning engineer') Example: \"software engineer\"."
+        },
+        "keywordsList": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Keywords (array) — Alternative: enter keywords as an array Example: []."
+        },
+        "location": {
+          "type": "string",
+          "description": "Location — Job location (e.g. 'Sydney', 'Melbourne', 'New Zealand'). Leave empty to search nationwide. Example: \"Sydney\"."
+        },
+        "country": {
+          "type": "string",
+          "enum": [
+            "AU",
+            "NZ"
+          ],
+          "default": "AU",
+          "description": "Country — Country to search: AU (Australia) or NZ (New Zealand)"
+        },
+        "workType": {
+          "type": "string",
+          "description": "Work Type — Filter by work type (e.g. 'Full time', 'Part time', 'Contract'). Leave empty for all. Example: \"\"."
+        },
+        "dateRange": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Posted within (days) — Filter jobs posted within the last N days (e.g. 7, 30) Example: 30."
+        },
+        "salaryRange": {
+          "type": "string",
+          "description": "Salary range — Filter by salary range if supported by Seek API Example: \"\"."
+        },
+        "maxJobs": {
+          "type": "integer",
+          "default": 50,
+          "minimum": 1,
+          "maximum": 500,
+          "description": "Max jobs — Maximum number of jobs to scrape (default 50, max will be limited by your account plan)"
+        }
+      },
+      "additionalProperties": false
+    },
+    "arrayFields": [
+      "keywordsList"
+    ],
+    "urlSourceFields": [],
+    "price": "$0.001 / job"
+  },
+  {
+    "name": "wellfound_jobs_scraper",
+    "actor": "webdatatools~wellfound-jobs-scraper",
+    "title": "Wellfound Jobs Scraper (AngelList Startup Jobs)",
+    "description": "Scrape startup jobs from Wellfound (AngelList Talent) by role and city or remote: title, salary and equity ranges, job type, location, posted date, description, and the company’s size, stage and tagline. No login. Billed to your own Apify account: ~$0.002 per job (Apify free-plan price, lower on paid plans).",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "roles": {
+          "type": "string",
+          "description": "Roles — Job roles, several separated by `;` (e.g. `software engineer; product manager; data scientist`). Use Wellfound’s role names. Example: \"software engineer\"."
+        },
+        "locations": {
+          "type": "string",
+          "description": "Locations — Cities, several separated by `;` (e.g. `New York; San Francisco; London`). Every role is searched in every location. Leave empty for all locations. Example: \"New York\"."
+        },
+        "remoteOnly": {
+          "type": "boolean",
+          "default": false,
+          "description": "Remote jobs only — Search remote jobs for each role instead of the locations."
+        },
+        "includeDescription": {
+          "type": "boolean",
+          "default": true,
+          "description": "Include job description — Add the full job description text to each row."
+        },
+        "maxJobs": {
+          "type": "integer",
+          "default": 50,
+          "minimum": 1,
+          "maximum": 5000,
+          "description": "Max jobs per search — For each role × location."
+        }
+      },
+      "additionalProperties": false
+    },
+    "arrayFields": [],
+    "urlSourceFields": [],
+    "price": "$0.002 / job"
   },
   {
     "name": "stepstone_scraper",
