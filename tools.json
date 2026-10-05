@@ -251,22 +251,22 @@
         "includeSecurityAudit": {
           "type": "boolean",
           "default": true,
-          "description": "Include security audit — Call our Domain Security Audit Actor for TLS certificate validity/expiry and a 0-100 security grade based on HTTP security headers. Runs as a separate Actor on your account and is billed separately at that Actor's price (about $0.005 per company)."
+          "description": "Include security audit — Check the TLS certificate (validity, expiry) and HTTP security headers, and grade them 0-100 (A-F)."
         },
         "includeHiring": {
           "type": "boolean",
           "default": true,
-          "description": "Include hiring signals — Call our Hiring Signals Actor for open job counts and hiring velocity. Only returns data when the domain's ATS job board could be found under its own name (e.g. a Greenhouse/Lever/Ashby board named after the company) - most domains will not match and get a warning instead, not an error. Runs as a separate Actor on your account and is billed separately at that Actor's price (about $0.002-0.004 per company)."
+          "description": "Include hiring signals — Count open jobs and hiring velocity from the company's public ATS job board (Greenhouse, Lever, Ashby, Workable and more). Only returns data when a board exists under the domain's own name — most domains will not match and get a warning instead, not an error."
         },
         "includeCompanyFacts": {
           "type": "boolean",
           "default": true,
-          "description": "Include company facts — Call our Wikidata Entity Enrichment Actor for headquarters, employee count, revenue, founders, founding date and Crunchbase/LinkedIn IDs. Works best for companies with a Wikidata entry. Runs as a separate Actor on your account and is billed separately at that Actor's price (about $0.001 per company)."
+          "description": "Include company facts — Look the company up on Wikidata for headquarters, employee count, revenue, founders, founding date and Crunchbase/LinkedIn IDs. Works best for companies with a Wikidata entry."
         },
         "includeSeo": {
           "type": "boolean",
           "default": true,
-          "description": "Include SEO audit — Call our On-Page SEO Audit Actor for the home page's 0-100 SEO score and a list of issues found. Runs as a separate Actor on your account and is billed separately at that Actor's price (about $0.002 per company)."
+          "description": "Include SEO audit — Audit the homepage's on-page SEO: a 0-100 score plus the list of issues found."
         }
       },
       "additionalProperties": false,
