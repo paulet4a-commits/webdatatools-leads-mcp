@@ -120,6 +120,77 @@
     "price": "$0.002 / place"
   },
   {
+    "name": "2gis_places_scraper",
+    "actor": "webdatatools~2gis-places-scraper",
+    "title": "2GIS Places Scraper (Phones, Websites, Ratings, Hours)",
+    "description": "Scrape businesses from 2GIS search results in Russia, Kazakhstan, UAE and 9 more countries: name, category, address, coordinates, rating, reviews, opening hours, phones, website and social links. Contacts included in the price, no login. Billed to your own Apify account: ~$0.002 per place (Apify free-plan price, lower on paid plans).",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "queries": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Search queries — What to search for, one per line — a category or a business name, in the local language works best, e.g. кафе, аптека, стоматология, coffee shop. Example: [\"кафе\"]."
+        },
+        "cities": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Cities — City slugs as they appear in 2GIS URLs, one per line, e.g. moscow, spb, novosibirsk, almaty, astana, dubai. Every query is searched in every city. Example: [\"moscow\"]."
+        },
+        "country": {
+          "type": "string",
+          "enum": [
+            "ru",
+            "kz",
+            "ae",
+            "kg",
+            "uz",
+            "az",
+            "am",
+            "ge",
+            "cy",
+            "cl",
+            "it",
+            "sa"
+          ],
+          "default": "ru",
+          "description": "2GIS site — Which 2GIS site the cities belong to. Options: ru = Russia (2gis.ru); kz = Kazakhstan (2gis.kz); ae = UAE (2gis.ae); kg = Kyrgyzstan (2gis.kg); uz = Uzbekistan (2gis.uz); az = Azerbaijan (2gis.az); am = Armenia (2gis.am); ge = Georgia (2gis.ge); cy = Cyprus (2gis.com.cy); cl = Chile (2gis.cl); it = Italy (2gis.it); sa = Saudi Arabia (2gis.sa)."
+        },
+        "startUrls": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "2GIS search URLs — Optional. Paste search URLs from any 2GIS site, e.g. https://2gis.kz/almaty/search/кофейня. Pagination is handled for you."
+        },
+        "maxPlacesPerSearch": {
+          "type": "integer",
+          "default": 60,
+          "minimum": 1,
+          "maximum": 2000,
+          "description": "Max places per search — Stop after this many places for each query-city pair or URL, e.g. 60. Each place is one billed result. 2GIS itself shows at most ~60 places (5 pages) per search, so use several narrower queries for more."
+        },
+        "includeContacts": {
+          "type": "boolean",
+          "default": true,
+          "description": "Include contacts — Open each place's card for phones, e-mails, website and social links (VK, Telegram, WhatsApp…). Included in the price; turn off only for faster runs without contacts."
+        }
+      },
+      "additionalProperties": false
+    },
+    "arrayFields": [
+      "queries",
+      "cities",
+      "startUrls"
+    ],
+    "urlSourceFields": [],
+    "price": "$0.002 / place"
+  },
+  {
     "name": "linkedin_jobs_scraper",
     "actor": "webdatatools~linkedin-jobs-scraper",
     "title": "LinkedIn Jobs Scraper",
@@ -631,6 +702,246 @@
     ],
     "urlSourceFields": [],
     "price": "$0.001 / Quote"
+  },
+  {
+    "name": "yahoo_finance_scraper",
+    "actor": "webdatatools~yahoo-finance-scraper",
+    "title": "Yahoo Finance Scraper (Quotes, Fundamentals, Financials, News)",
+    "description": "Scrape Yahoo Finance for any ticker: live-delayed price, market cap, P/E, EPS, dividends, sector, employees, analyst targets and ratings, plus optional income statements, balance sheet, cash flow, ownership, insider trades, news and price history. No API key. Billed to your own Apify account: ~$0.0015 per symbol (Apify free-plan price, lower on paid plans).",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "symbols": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Symbols — Yahoo Finance tickers, one per line: stocks and ETFs (AAPL, SPY), international listings (VOD.L, 7203.T, THYAO.IS), indices (^GSPC), crypto (BTC-USD), FX (EURUSD=X), futures (GC=F). Example: [\"AAPL\",\"MSFT\"]."
+        },
+        "includeFinancials": {
+          "type": "boolean",
+          "default": false,
+          "description": "Include financial statements — Add annual and quarterly income statements, annual balance sheet and cash flow, and quarterly EPS actual vs estimate (stocks only)."
+        },
+        "includeOwnership": {
+          "type": "boolean",
+          "default": false,
+          "description": "Include ownership — Add insider and institutional ownership percentages, the top 10 institutional holders and recent insider transactions (stocks only)."
+        },
+        "newsCount": {
+          "type": "integer",
+          "default": 5,
+          "minimum": 0,
+          "maximum": 20,
+          "description": "News articles per symbol — Recent news headlines to attach to each symbol, e.g. 5. Set 0 for none."
+        },
+        "historyRange": {
+          "type": "string",
+          "enum": [
+            "none",
+            "1mo",
+            "3mo",
+            "6mo",
+            "1y",
+            "2y",
+            "5y",
+            "max"
+          ],
+          "default": "none",
+          "description": "Price history — Optional. Attach daily OHLCV price history for this range. Options: none = None; 1mo = 1 month; 3mo = 3 months; 6mo = 6 months; 1y = 1 year; 2y = 2 years; 5y = 5 years; max = Max."
+        }
+      },
+      "additionalProperties": false
+    },
+    "arrayFields": [
+      "symbols"
+    ],
+    "urlSourceFields": [],
+    "price": "$0.0015 / symbol"
+  },
+  {
+    "name": "dexscreener_scraper",
+    "actor": "webdatatools~dexscreener-scraper",
+    "title": "DexScreener Scraper (DEX Pairs, Prices, Liquidity, Boosts)",
+    "description": "Get DEX pair data from DexScreener's official public API: price, 5m-24h price change, volume, buys/sells, liquidity, FDV, market cap and creation date for any token or pair on Solana, Ethereum, Base, BSC and 80+ chains — plus the latest token profiles and top boosted tokens. Billed to your own Apify account: ~$0.0005 per row (Apify free-plan price, lower on paid plans).",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "mode": {
+          "type": "string",
+          "enum": [
+            "search",
+            "tokens",
+            "pairs",
+            "latestProfiles",
+            "topBoosted",
+            "latestBoosted"
+          ],
+          "default": "search",
+          "description": "Mode — search: pairs matching a token name, symbol or address. tokens: every pair of the given token addresses. pairs: specific pairs. latestProfiles: newest token profiles. topBoosted / latestBoosted: tokens with the most / newest DexScreener boosts. Options: search = Search pairs; tokens = Pairs of token addresses; pairs = Specific pairs; latestProfiles = Latest token profiles; topBoosted = Top boosted tokens; latestBoosted = Latest boosted tokens."
+        },
+        "queries": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [
+            "PEPE"
+          ],
+          "description": "Search queries — For search mode: token names, symbols or addresses, one per line, e.g. PEPE, WIF, SOL/USDC. DexScreener returns up to 30 pairs per query."
+        },
+        "chainId": {
+          "type": "string",
+          "description": "Chain — For tokens and pairs mode with bare addresses, e.g. solana, ethereum, base, bsc, arbitrum. In profile/boost modes it filters to this chain."
+        },
+        "tokenAddresses": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Token addresses — For tokens mode: token contract addresses, one per line (bare with Chain set, or as chain/address, e.g. ethereum/0x6982508145454Ce325dDbE47a25d4ec3d2311933)."
+        },
+        "pairAddresses": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Pair addresses or DexScreener URLs — For pairs mode: pair addresses (with Chain set), chain/address, or DexScreener pair URLs."
+        },
+        "minLiquidityUsd": {
+          "type": "integer",
+          "default": 0,
+          "minimum": 0,
+          "description": "Minimum liquidity (USD) — Skip pairs with less pool liquidity than this, e.g. 10000 to drop dust and rug pools. 0 keeps everything."
+        },
+        "maxItems": {
+          "type": "integer",
+          "default": 100,
+          "minimum": 1,
+          "maximum": 10000,
+          "description": "Max rows — Stop after this many rows in total. Each row is one billed result."
+        }
+      },
+      "additionalProperties": false
+    },
+    "arrayFields": [
+      "queries",
+      "tokenAddresses",
+      "pairAddresses"
+    ],
+    "urlSourceFields": [],
+    "price": "$0.0005 / row"
+  },
+  {
+    "name": "polymarket_scraper",
+    "actor": "webdatatools~polymarket-scraper",
+    "title": "Polymarket Scraper (Prediction Markets, Odds, Volume)",
+    "description": "Scrape Polymarket prediction markets: question, outcomes with live prices (implied probabilities), 24h and total volume, liquidity, bid/ask, end date and event. Rank by volume or liquidity, filter by tag, or search by text. No API key. Billed to your own Apify account: ~$0.001 per market (Apify free-plan price, lower on paid plans).",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "mode": {
+          "type": "string",
+          "enum": [
+            "markets",
+            "events"
+          ],
+          "default": "markets",
+          "description": "Mode — markets: individual markets ranked by the chosen sort. events: events (e.g. \"Fed decision in December\") expanded into all their markets, with event tags. Options: markets = Markets; events = Events (all markets of each event)."
+        },
+        "query": {
+          "type": "string",
+          "description": "Search text — Optional. Search Polymarket by text, e.g. bitcoin, election, Fed. Returns the markets of the matching events; overrides Mode, Tag and Sort."
+        },
+        "tag": {
+          "type": "string",
+          "description": "Tag — Optional. Only markets/events with this Polymarket tag slug, e.g. politics, crypto, sports, economy."
+        },
+        "sortBy": {
+          "type": "string",
+          "enum": [
+            "volume24hr",
+            "volume",
+            "liquidity",
+            "endDate",
+            "createdAt"
+          ],
+          "default": "volume24hr",
+          "description": "Sort by — Ranking for markets/events mode. End date sorts soonest first; the others sort highest/newest first. Options: volume24hr = 24-hour volume; volume = Total volume; liquidity = Liquidity; endDate = End date (soonest); createdAt = Newest."
+        },
+        "activeOnly": {
+          "type": "boolean",
+          "default": true,
+          "description": "Active markets only — Skip closed and resolved markets."
+        },
+        "maxItems": {
+          "type": "integer",
+          "default": 50,
+          "minimum": 1,
+          "maximum": 10000,
+          "description": "Max markets — Stop after this many markets, e.g. 50. Each market is one billed result."
+        },
+        "debug": {
+          "type": "boolean",
+          "default": false,
+          "description": "Save raw API responses — Store raw API responses in the key-value store, for troubleshooting."
+        }
+      },
+      "additionalProperties": false
+    },
+    "arrayFields": [],
+    "urlSourceFields": [],
+    "price": "$0.001 / market"
+  },
+  {
+    "name": "stocktwits_scraper",
+    "actor": "webdatatools~stocktwits-scraper",
+    "title": "StockTwits Scraper (Messages, Sentiment, Trending)",
+    "description": "Scrape StockTwits messages for any stock or crypto ticker with Bullish/Bearish sentiment, likes, author stats and the price at posting time — or the current trending symbols with watchlist counts. Public API, no login. Billed to your own Apify account: ~$0.0005 per message (Apify free-plan price, lower on paid plans).",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "mode": {
+          "type": "string",
+          "enum": [
+            "symbols",
+            "trending"
+          ],
+          "default": "symbols",
+          "description": "Mode — symbols: the latest messages for each ticker below. trending: StockTwits' current trending symbols with watchlist counts and a summary of why they trend. Options: symbols = Messages for symbols; trending = Trending symbols."
+        },
+        "symbols": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Symbols — Tickers, one per line, e.g. AAPL, TSLA, SPY. Crypto uses the .X suffix, e.g. BTC.X, ETH.X. Example: [\"AAPL\"]."
+        },
+        "maxMessagesPerSymbol": {
+          "type": "integer",
+          "default": 100,
+          "minimum": 1,
+          "maximum": 5000,
+          "description": "Max messages per symbol — Newest messages to collect for each symbol, e.g. 100. StockTwits serves 30 per page. Each message is one billed result."
+        },
+        "sentimentOnly": {
+          "type": "string",
+          "enum": [
+            "",
+            "Bullish",
+            "Bearish"
+          ],
+          "default": "",
+          "description": "Only messages tagged — Optional. Keep only messages whose author tagged them Bullish or Bearish. Options:  = Any (no filter); Bullish = Bullish only; Bearish = Bearish only."
+        }
+      },
+      "additionalProperties": false
+    },
+    "arrayFields": [
+      "symbols"
+    ],
+    "urlSourceFields": [],
+    "price": "$0.0005 / message"
   },
   {
     "name": "remote_jobs_aggregator",
