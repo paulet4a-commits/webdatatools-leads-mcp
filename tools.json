@@ -944,6 +944,68 @@
     "price": "$0.0005 / message"
   },
   {
+    "name": "economic_calendar_scraper",
+    "actor": "webdatatools~economic-calendar-scraper",
+    "title": "Economic Calendar Scraper (Forex Events, Impact, Forecasts)",
+    "description": "This week's macro-economic calendar as clean JSON: event, currency, time in UTC, High/Medium/Low impact, forecast and previous figures as text and numbers. Filter by currency and impact. For traders, bots and dashboards. Billed to your own Apify account: ~$0.0005 per event (Apify free-plan price, lower on paid plans).",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "currencies": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Currencies — Optional. Keep only events for these currencies, one per line, e.g. USD, EUR, GBP, JPY. Leave empty for all (AUD, CAD, CHF, CNY, EUR, GBP, JPY, NZD, USD and global events marked All)."
+        },
+        "minImpact": {
+          "type": "string",
+          "enum": [
+            "all",
+            "low",
+            "medium",
+            "high"
+          ],
+          "default": "all",
+          "description": "Minimum impact — Keep events at or above this expected market impact. 'All' also keeps bank holidays. Options: all = All (incl. holidays); low = Low and up; medium = Medium and up; high = High only."
+        }
+      },
+      "additionalProperties": false
+    },
+    "arrayFields": [
+      "currencies"
+    ],
+    "urlSourceFields": [],
+    "price": "$0.0005 / event"
+  },
+  {
+    "name": "crypto_fear_greed_index",
+    "actor": "webdatatools~crypto-fear-greed-index",
+    "title": "Crypto Fear & Greed Index (Daily History, Bitcoin Sentiment)",
+    "description": "Get the Crypto Fear & Greed Index — today's value and daily history back to 2018 — as clean rows: date, 0-100 value, sentiment (Extreme Fear to Extreme Greed) and day-over-day change. For trading bots, dashboards and backtests. No API key. Billed to your own Apify account: ~$0.0005 per day (Apify free-plan price, lower on paid plans).",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "days": {
+          "type": "integer",
+          "default": 30,
+          "minimum": 0,
+          "maximum": 10000,
+          "description": "Days of history — How many days to return, newest first, e.g. 30. Enter 0 for the full history (daily since February 2018, about 2,800 rows). Each day is one billed result."
+        },
+        "includeChange": {
+          "type": "boolean",
+          "default": true,
+          "description": "Include day-over-day change — Add the change in points and the previous day's sentiment to every row."
+        }
+      },
+      "additionalProperties": false
+    },
+    "arrayFields": [],
+    "urlSourceFields": [],
+    "price": "$0.0005 / day"
+  },
+  {
     "name": "remote_jobs_aggregator",
     "actor": "webdatatools~remote-jobs-aggregator",
     "title": "Remote Jobs Aggregator (RemoteOK, WWR, Hacker News)",

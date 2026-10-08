@@ -1,7 +1,7 @@
 # WebDataTools Leads, jobs & company data MCP server
 `webdatatools-leads-mcp`
 
-An MCP server with 22 leads, jobs & company data tools for AI agents — Claude Desktop, Cursor, Cline or any MCP client. Company profiles from a domain, hiring signals from ATS boards, Y Combinator companies, Wikidata enrichment, e-mail validation, OpenStreetMap places, market quotes and remote jobs.
+An MCP server with 24 leads, jobs & company data tools for AI agents — Claude Desktop, Cursor, Cline or any MCP client. Company profiles from a domain, hiring signals from ATS boards, Y Combinator companies, Wikidata enrichment, e-mail validation, OpenStreetMap places, market quotes and remote jobs.
 
 **This server uses *your own* Apify API token.** Every tool call runs a [WebDataTools](https://apify.com/webdatatools) Actor under your Apify account and is billed to your Apify credit — pay per result, the price is in each tool description. Your token is only sent to Apify's API.
 
@@ -36,7 +36,7 @@ Add this to `claude_desktop_config.json` (Claude Desktop) or `.cursor/mcp.json` 
 }
 ```
 
-## Tools (22)
+## Tools (24)
 
 | Tool | What it does | Price (free plan) | Backing Actor |
 |---|---|---|---|
@@ -55,6 +55,8 @@ Add this to `claude_desktop_config.json` (Claude Desktop) or `.cursor/mcp.json` 
 | `dexscreener_scraper` | DexScreener Scraper (DEX Pairs, Prices, Liquidity, Boosts) | $0.0005 / row | [Actor](https://apify.com/webdatatools/dexscreener-scraper) |
 | `polymarket_scraper` | Polymarket Scraper (Prediction Markets, Odds, Volume) | $0.001 / market | [Actor](https://apify.com/webdatatools/polymarket-scraper) |
 | `stocktwits_scraper` | StockTwits Scraper (Messages, Sentiment, Trending) | $0.0005 / message | [Actor](https://apify.com/webdatatools/stocktwits-scraper) |
+| `economic_calendar_scraper` | Economic Calendar Scraper (Forex Events, Impact, Forecasts) | $0.0005 / event | [Actor](https://apify.com/webdatatools/economic-calendar-scraper) |
+| `crypto_fear_greed_index` | Crypto Fear & Greed Index (Daily History, Bitcoin Sentiment) | $0.0005 / day | [Actor](https://apify.com/webdatatools/crypto-fear-greed-index) |
 | `remote_jobs_aggregator` | Remote Jobs Aggregator (RemoteOK, WWR, Hacker News) | $0.001 / Job | [Actor](https://apify.com/webdatatools/remote-jobs-aggregator) |
 | `seek_jobs_scraper` | Seek Jobs Scraper (Australia & New Zealand) | $0.001 / job | [Actor](https://apify.com/webdatatools/seek-jobs-scraper) |
 | `wellfound_jobs_scraper` | Wellfound Jobs Scraper (AngelList Startup Jobs) | $0.002 / job | [Actor](https://apify.com/webdatatools/wellfound-jobs-scraper) |
