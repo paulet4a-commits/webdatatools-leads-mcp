@@ -1,7 +1,7 @@
 # WebDataTools Leads, jobs & company data MCP server
 `webdatatools-leads-mcp`
 
-An MCP server with 24 leads, jobs & company data tools for AI agents — Claude Desktop, Cursor, Cline or any MCP client. Company profiles from a domain, hiring signals from ATS boards, Y Combinator companies, Wikidata enrichment, e-mail validation, OpenStreetMap places, market quotes and remote jobs.
+An MCP server with 27 leads, jobs & company data tools for AI agents — Claude Desktop, Cursor, Cline or any MCP client. Company profiles from a domain, hiring signals from ATS boards, Y Combinator companies, Wikidata enrichment, e-mail validation, OpenStreetMap places, market quotes and remote jobs.
 
 **This server uses *your own* Apify API token.** Every tool call runs a [WebDataTools](https://apify.com/webdatatools) Actor under your Apify account and is billed to your Apify credit — pay per result, the price is in each tool description. Your token is only sent to Apify's API.
 
@@ -36,11 +36,12 @@ Add this to `claude_desktop_config.json` (Claude Desktop) or `.cursor/mcp.json` 
 }
 ```
 
-## Tools (24)
+## Tools (27)
 
 | Tool | What it does | Price (free plan) | Backing Actor |
 |---|---|---|---|
 | `career_site_jobs_api` | Career Site Jobs API (Greenhouse, Lever, Ashby, Workday +1) | $0.003 / job | [Actor](https://apify.com/webdatatools/career-site-jobs-api) |
+| `workday_jobs_scraper` | Workday Jobs Scraper | $0.001 / job | [Actor](https://apify.com/webdatatools/workday-jobs-scraper) |
 | `google_maps_scraper` | Google Maps Scraper | $0.002 / place | [Actor](https://apify.com/webdatatools/google-maps-scraper) |
 | `2gis_places_scraper` | 2GIS Places Scraper (Phones, Websites, Ratings, Hours) | $0.002 / place | [Actor](https://apify.com/webdatatools/2gis-places-scraper) |
 | `linkedin_jobs_scraper` | LinkedIn Jobs Scraper | $0.001 / job | [Actor](https://apify.com/webdatatools/linkedin-jobs-scraper) |
@@ -58,7 +59,9 @@ Add this to `claude_desktop_config.json` (Claude Desktop) or `.cursor/mcp.json` 
 | `economic_calendar_scraper` | Economic Calendar Scraper (Forex Events, Impact, Forecasts) | $0.0005 / event | [Actor](https://apify.com/webdatatools/economic-calendar-scraper) |
 | `crypto_fear_greed_index` | Crypto Fear & Greed Index (Daily History, Bitcoin Sentiment) | $0.0005 / day | [Actor](https://apify.com/webdatatools/crypto-fear-greed-index) |
 | `remote_jobs_aggregator` | Remote Jobs Aggregator (RemoteOK, WWR, Hacker News) | $0.001 / Job | [Actor](https://apify.com/webdatatools/remote-jobs-aggregator) |
+| `greenhouse_jobs_scraper` | Greenhouse Jobs Scraper | $0.001 / job | [Actor](https://apify.com/webdatatools/greenhouse-jobs-scraper) |
 | `seek_jobs_scraper` | Seek Jobs Scraper (Australia & New Zealand) | $0.001 / job | [Actor](https://apify.com/webdatatools/seek-jobs-scraper) |
+| `autoscout24_scraper` | AutoScout24 Scraper | $0.001 / listing | [Actor](https://apify.com/webdatatools/autoscout24-scraper) |
 | `wellfound_jobs_scraper` | Wellfound Jobs Scraper (AngelList Startup Jobs) | $0.002 / job | [Actor](https://apify.com/webdatatools/wellfound-jobs-scraper) |
 | `stepstone_scraper` | StepStone Scraper (Germany, Austria, Belgium Jobs) | $0.001 / job | [Actor](https://apify.com/webdatatools/stepstone-scraper) |
 | `naukri_jobs_scraper` | Naukri Jobs Scraper (Salary, Skills, Company Rating) | $0.0008 / job | [Actor](https://apify.com/webdatatools/naukri-jobs-scraper) |

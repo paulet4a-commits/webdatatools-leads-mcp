@@ -48,6 +48,49 @@
     "price": "$0.003 / job"
   },
   {
+    "name": "workday_jobs_scraper",
+    "actor": "webdatatools~workday-jobs-scraper",
+    "title": "Workday Jobs Scraper",
+    "description": "Scrape job postings from Workday career sites Billed to your own Apify account: ~$0.001 per job (Apify free-plan price, lower on paid plans).",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "careerSiteUrls": {
+          "type": "string",
+          "description": "Career Site URLs — Workday career site URLs, semicolon-separated. Example: https://nvidia.wd5.myworkdayjobs.com/NVIDIAExternalCareerSite; https://workday.wd5.myworkdayjobs.com/Workday Example: \"https://nvidia.wd5.myworkdayjobs.com/NVIDIAExternalCareerSite\".",
+          "minLength": 1
+        },
+        "keywords": {
+          "type": "string",
+          "description": "Keywords — Job search keywords, semicolon-separated. Example: engineer; manager; sales Example: \"\"."
+        },
+        "location": {
+          "type": "string",
+          "description": "Location — Job location filter. Example: San Francisco; Remote Example: \"\"."
+        },
+        "includeDescription": {
+          "type": "boolean",
+          "default": true,
+          "description": "Include Job Descriptions — Fetch each job page for the full description, exact post date, all locations and the hiring entity (one extra small request per job)."
+        },
+        "maxJobs": {
+          "type": "integer",
+          "default": 50,
+          "minimum": 1,
+          "maximum": 2000,
+          "description": "Max Jobs per Site — Maximum number of jobs to fetch per career site (default 50, max ~2000 per Workday's limits)."
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "careerSiteUrls"
+      ]
+    },
+    "arrayFields": [],
+    "urlSourceFields": [],
+    "price": "$0.001 / job"
+  },
+  {
     "name": "google_maps_scraper",
     "actor": "webdatatools~google-maps-scraper",
     "title": "Google Maps Scraper",
@@ -57,7 +100,7 @@
       "properties": {
         "searchQueries": {
           "type": "string",
-          "description": "Search queries — Enter search queries separated by semicolon, e.g. \"dentist; coffee shop\". Aliases: query, keyword, search, searchStringsArray. Example: \"dentist\".",
+          "description": "Search queries — Enter what to search: one term as a string, e.g. \"dentist\", several separated by semicolons, e.g. \"dentist; coffee shop\", or a JSON array, e.g. [\"dentist\", \"coffee shop\"]. Aliases: query, keyword, search, searchStringsArray. Example: \"dentist\".",
           "minLength": 1
         },
         "location": {
@@ -1086,6 +1129,64 @@
     "price": "$0.001 / Job"
   },
   {
+    "name": "greenhouse_jobs_scraper",
+    "actor": "webdatatools~greenhouse-jobs-scraper",
+    "title": "Greenhouse Jobs Scraper",
+    "description": "Greenhouse Jobs Scraper extracts job listings from Greenhouse job boards via the public boards API. Scrape job titles, descriptions, locations, compensation, and more from any Greenhouse-powered careers page. Billed to your own Apify account: ~$0.001 per job (Apify free-plan price, lower on paid plans).",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "companies": {
+          "type": "string",
+          "description": "Company/Board — Enter the Greenhouse board slug (e.g. stripe) or a careers URL (e.g. https://boards.greenhouse.io/stripe). Separate multiple companies with semicolons. Example: \"stripe\"."
+        },
+        "companyList": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [],
+          "description": "Company list (alternative) — Optional: array of board slugs or URLs, alternative to companies field."
+        },
+        "keywords": {
+          "type": "string",
+          "description": "Job title keywords — Optional: filter jobs by keywords in the title, e.g. 'engineer'. Leave empty to include all jobs."
+        },
+        "location": {
+          "type": "string",
+          "description": "Location — Optional: filter jobs by location substring, e.g. 'San Francisco' or 'Remote'."
+        },
+        "department": {
+          "type": "string",
+          "description": "Department — Optional: filter jobs by department name."
+        },
+        "remoteOnly": {
+          "type": "boolean",
+          "default": false,
+          "description": "Remote jobs only — If true, return only remote jobs."
+        },
+        "includeDescription": {
+          "type": "boolean",
+          "default": true,
+          "description": "Include job descriptions — If true, fetch and include the full job description (HTML and plain text)."
+        },
+        "maxJobs": {
+          "type": "integer",
+          "default": 50,
+          "minimum": 1,
+          "maximum": 1000,
+          "description": "Max jobs per company — Maximum number of jobs to fetch per company, e.g. 50. Default 50."
+        }
+      },
+      "additionalProperties": false
+    },
+    "arrayFields": [
+      "companyList"
+    ],
+    "urlSourceFields": [],
+    "price": "$0.001 / job"
+  },
+  {
     "name": "seek_jobs_scraper",
     "actor": "webdatatools~seek-jobs-scraper",
     "title": "Seek Jobs Scraper (Australia & New Zealand)",
@@ -1145,6 +1246,106 @@
     ],
     "urlSourceFields": [],
     "price": "$0.001 / job"
+  },
+  {
+    "name": "autoscout24_scraper",
+    "actor": "webdatatools~autoscout24-scraper",
+    "title": "AutoScout24 Scraper",
+    "description": "AutoScout24 Scraper extracts car listings from any AutoScout24 country site: make, model, price, mileage, registration, fuel, power, seller and location, per 1,000 listings. Billed to your own Apify account: ~$0.001 per listing (Apify free-plan price, lower on paid plans).",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "searchUrls": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Search URLs — Enter AutoScout24 search result URLs from any domain (.com, .de, .it, .fr, .nl, .be, .at, .es). Example: https://www.autoscout24.com/lst?atype=C&mmvco=70000 Example: []."
+        },
+        "urls": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "URLs (alias) — Alias for searchUrls - use either searchUrls or urls Example: []."
+        },
+        "make": {
+          "type": "string",
+          "description": "Car make/brand — Car make (brand) to search for, e.g. BMW, Mercedes, Audi. Used if no search URLs provided. Example: \"\"."
+        },
+        "model": {
+          "type": "string",
+          "description": "Car model — Car model to search for, e.g. 3 Series, C-Class. Used if no search URLs provided. Example: \"\"."
+        },
+        "priceFrom": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Price from — Minimum price in EUR. Used if no search URLs provided. Example: 0."
+        },
+        "priceTo": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Price to — Maximum price in EUR. Used if no search URLs provided. Example: 999999."
+        },
+        "yearFrom": {
+          "type": "integer",
+          "minimum": 1950,
+          "description": "Year from — Minimum registration year. Used if no search URLs provided. Example: 2000."
+        },
+        "yearTo": {
+          "type": "integer",
+          "minimum": 1950,
+          "description": "Year to — Maximum registration year. Used if no search URLs provided. Example: 2026."
+        },
+        "mileageTo": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Mileage to — Maximum mileage in km. Used if no search URLs provided. Example: 999999."
+        },
+        "fuel": {
+          "type": "string",
+          "enum": [
+            "",
+            "petrol",
+            "diesel",
+            "lpg",
+            "cng",
+            "ethanol",
+            "hybrid",
+            "electric"
+          ],
+          "description": "Fuel type — petrol, diesel, electric, hybrid, lpg, cng or hydrogen. Example: \"\"."
+        },
+        "country": {
+          "type": "string",
+          "description": "Country code — Country filter as an ISO code: de, it, at, be, es, fr, lu, nl (converted to AutoScout24's own codes). Example: \"de\"."
+        },
+        "zip": {
+          "type": "string",
+          "description": "ZIP code — ZIP code for location search. Used if no search URLs provided. Example: \"\"."
+        },
+        "radius": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 500,
+          "description": "Search radius — Search radius in km from ZIP code. Used if no search URLs provided. Example: 50."
+        },
+        "maxListings": {
+          "type": "integer",
+          "default": 40,
+          "minimum": 1,
+          "maximum": 400,
+          "description": "Max listings — Maximum listings per search (each search URL or the filter search)."
+        }
+      },
+      "additionalProperties": false
+    },
+    "arrayFields": [
+      "searchUrls",
+      "urls"
+    ],
+    "urlSourceFields": [],
+    "price": "$0.001 / listing"
   },
   {
     "name": "wellfound_jobs_scraper",
