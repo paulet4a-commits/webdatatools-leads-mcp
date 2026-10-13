@@ -1331,6 +1331,64 @@
     "price": "$0.001 / job"
   },
   {
+    "name": "smartrecruiters_jobs_scraper",
+    "actor": "webdatatools~smartrecruiters-jobs-scraper",
+    "title": "SmartRecruiters Jobs Scraper",
+    "description": "SmartRecruiters Jobs Scraper extracts job listings from SmartRecruiters job boards. SmartRecruiters powers careers pages for companies like Bosch, Visa, and many others. Get job titles, locations, employment types, and more from any SmartRecruiters-powered careers page. Billed to your own Apify account: ~$0.001 per job (Apify free-plan price, lower on paid plans).",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "companies": {
+          "type": "string",
+          "description": "Company/Board — Enter the SmartRecruiters company slug (e.g. BoschGroup) or a careers URL (e.g. https://jobs.smartrecruiters.com/BoschGroup). Separate multiple with semicolons. Example: \"BoschGroup\"."
+        },
+        "companyList": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [],
+          "description": "Company list (alternative) — Optional: array of company slugs or URLs."
+        },
+        "keywords": {
+          "type": "string",
+          "description": "Job title keywords — Optional: filter by keywords."
+        },
+        "location": {
+          "type": "string",
+          "description": "Location — Optional: filter by location."
+        },
+        "department": {
+          "type": "string",
+          "description": "Department — Optional: filter by department."
+        },
+        "remoteOnly": {
+          "type": "boolean",
+          "default": false,
+          "description": "Remote jobs only — Return only remote jobs."
+        },
+        "includeDescription": {
+          "type": "boolean",
+          "default": false,
+          "description": "Include job descriptions — Note: SmartRecruiters API does not include descriptions in the listing endpoint."
+        },
+        "maxJobs": {
+          "type": "integer",
+          "default": 50,
+          "minimum": 1,
+          "maximum": 1000,
+          "description": "Max jobs per company — Default 50."
+        }
+      },
+      "additionalProperties": false
+    },
+    "arrayFields": [
+      "companyList"
+    ],
+    "urlSourceFields": [],
+    "price": "$0.001 / job"
+  },
+  {
     "name": "seek_jobs_scraper",
     "actor": "webdatatools~seek-jobs-scraper",
     "title": "Seek Jobs Scraper (Australia & New Zealand)",
@@ -1374,6 +1432,59 @@
         "salaryRange": {
           "type": "string",
           "description": "Salary range — Filter by salary range if supported by Seek API Example: \"\"."
+        },
+        "maxJobs": {
+          "type": "integer",
+          "default": 50,
+          "minimum": 1,
+          "maximum": 500,
+          "description": "Max jobs — Maximum number of jobs to scrape (default 50, max will be limited by your account plan)"
+        }
+      },
+      "additionalProperties": false
+    },
+    "arrayFields": [
+      "keywordsList"
+    ],
+    "urlSourceFields": [],
+    "price": "$0.001 / job"
+  },
+  {
+    "name": "dice_jobs_scraper",
+    "actor": "webdatatools~dice-jobs-scraper",
+    "title": "Dice Jobs Scraper",
+    "description": "Scrape job listings from Dice.com. Extract job details including title, company, location, salary, employment type, remote status, and description. Billed to your own Apify account: ~$0.001 per job (Apify free-plan price, lower on paid plans).",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "keywords": {
+          "type": "string",
+          "description": "Keywords — Job search keywords, separated by semicolons (e.g. 'python; devops; kubernetes') Example: \"python\"."
+        },
+        "keywordsList": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Keywords (array) — Alternative: enter keywords as an array Example: []."
+        },
+        "location": {
+          "type": "string",
+          "description": "Location — Job location (e.g. 'New York', 'San Francisco', 'Remote'). Leave empty to search nationwide. Example: \"New York\"."
+        },
+        "employmentType": {
+          "type": "string",
+          "description": "Employment Type — Filter by employment type (e.g. 'Full-time', 'Contract', 'Part-time'). Leave empty for all. Example: \"\"."
+        },
+        "postedDate": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Posted within (days) — Filter jobs posted within the last N days (e.g. 7, 30) Example: 30."
+        },
+        "isRemote": {
+          "type": "boolean",
+          "default": false,
+          "description": "Remote jobs only — Filter to show only remote job opportunities"
         },
         "maxJobs": {
           "type": "integer",

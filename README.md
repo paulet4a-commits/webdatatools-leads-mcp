@@ -1,7 +1,7 @@
 # WebDataTools Leads, jobs & company data MCP server
 `webdatatools-leads-mcp`
 
-An MCP server with 30 leads, jobs & company data tools for AI agents — Claude Desktop, Cursor, Cline or any MCP client. Company profiles from a domain, hiring signals from ATS boards, Y Combinator companies, Wikidata enrichment, e-mail validation, OpenStreetMap places, market quotes and remote jobs.
+An MCP server with 32 leads, jobs & company data tools for AI agents — Claude Desktop, Cursor, Cline or any MCP client. Company profiles from a domain, hiring signals from ATS boards, Y Combinator companies, Wikidata enrichment, e-mail validation, OpenStreetMap places, market quotes and remote jobs.
 
 **This server uses *your own* Apify API token.** Every tool call runs a [WebDataTools](https://apify.com/webdatatools) Actor under your Apify account and is billed to your Apify credit — pay per result, the price is in each tool description. Your token is only sent to Apify's API.
 
@@ -36,7 +36,7 @@ Add this to `claude_desktop_config.json` (Claude Desktop) or `.cursor/mcp.json` 
 }
 ```
 
-## Tools (30)
+## Tools (32)
 
 | Tool | What it does | Price (free plan) | Backing Actor |
 |---|---|---|---|
@@ -62,7 +62,9 @@ Add this to `claude_desktop_config.json` (Claude Desktop) or `.cursor/mcp.json` 
 | `greenhouse_jobs_scraper` | Greenhouse Jobs Scraper | $0.001 / job | [Actor](https://apify.com/webdatatools/greenhouse-jobs-scraper) |
 | `lever_jobs_scraper` | Lever Jobs Scraper | $0.001 / job | [Actor](https://apify.com/webdatatools/lever-jobs-scraper) |
 | `ashby_jobs_scraper` | Ashby Jobs Scraper | $0.001 / job | [Actor](https://apify.com/webdatatools/ashby-jobs-scraper) |
+| `smartrecruiters_jobs_scraper` | SmartRecruiters Jobs Scraper | $0.001 / job | [Actor](https://apify.com/webdatatools/smartrecruiters-jobs-scraper) |
 | `seek_jobs_scraper` | Seek Jobs Scraper (Australia & New Zealand) | $0.001 / job | [Actor](https://apify.com/webdatatools/seek-jobs-scraper) |
+| `dice_jobs_scraper` | Dice Jobs Scraper | $0.001 / job | [Actor](https://apify.com/webdatatools/dice-jobs-scraper) |
 | `autoscout24_scraper` | AutoScout24 Scraper | $0.001 / listing | [Actor](https://apify.com/webdatatools/autoscout24-scraper) |
 | `rightmove_scraper` | Rightmove Scraper | $0.001 / property | [Actor](https://apify.com/webdatatools/rightmove-scraper) |
 | `wellfound_jobs_scraper` | Wellfound Jobs Scraper (AngelList Startup Jobs) | $0.002 / job | [Actor](https://apify.com/webdatatools/wellfound-jobs-scraper) |
