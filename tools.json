@@ -1911,6 +1911,169 @@
     "price": "$0.002 / job"
   },
   {
+    "name": "yandex_maps_scraper",
+    "actor": "webdatatools~yandex-maps-scraper",
+    "title": "Yandex Maps Scraper (Places, Ratings, Phones)",
+    "description": "Scrape businesses from Yandex Maps by search term and city: name, categories, address, coordinates, rating, reviews, phones, website, social links, opening hours. No login. Billed to your own Apify account: ~$0.002 per place (Apify free-plan price, lower on paid plans).",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "queries": {
+          "type": "string",
+          "description": "What to search — Business type or name, several separated by `;` (e.g. `cafe; dentist; hotel`). Example: \"cafe\".",
+          "minLength": 1
+        },
+        "locations": {
+          "type": "string",
+          "description": "Where — City or area, several separated by `;` (e.g. `Moscow; Istanbul; Almaty`). Every query is searched in every location. Leave empty if the query already names the place. Example: \"Moscow\"."
+        },
+        "maxPlaces": {
+          "type": "integer",
+          "default": 50,
+          "minimum": 1,
+          "maximum": 1000,
+          "description": "Max places per search — Maximum places for each query × location."
+        },
+        "language": {
+          "type": "string",
+          "enum": [
+            "en",
+            "ru",
+            "tr",
+            "uk",
+            "kk",
+            "uz"
+          ],
+          "default": "en",
+          "description": "Language — Language of names, categories and addresses where Yandex has a translation. Options: en = English; ru = Russian; tr = Turkish; uk = Ukrainian; kk = Kazakh; uz = Uzbek."
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "queries"
+      ]
+    },
+    "arrayFields": [],
+    "urlSourceFields": [],
+    "price": "$0.002 / place"
+  },
+  {
+    "name": "craigslist_scraper",
+    "actor": "webdatatools~craigslist-scraper",
+    "title": "Craigslist Scraper (Listings, Prices, Locations)",
+    "description": "Scrape Craigslist search results in any area and category: title, price, posted date, neighborhood, coordinates, images and link. For sale, housing, cars, jobs. No login. Billed to your own Apify account: ~$0.001 per listing (Apify free-plan price, lower on paid plans).",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "queries": {
+          "type": "string",
+          "description": "Search terms — What to search for, several terms separated by `;` (e.g. `road bike; couch`). Leave empty to list the newest posts in the category. Example: \"road bike\".",
+          "minLength": 1
+        },
+        "areas": {
+          "type": "string",
+          "description": "Areas — Craigslist areas, several separated by `;`: the site hostname (`newyork`, `sfbay`, `london`), its abbreviation (`nyc`), its name (`new york city`) or a craigslist URL. Every term is searched in every area. Example: \"sfbay; newyork\".",
+          "minLength": 1
+        },
+        "category": {
+          "type": "string",
+          "default": "sss",
+          "description": "Category — Search path: `sss` all for sale (default), `bia` bicycles, `cta` cars & trucks, `fua` furniture, `ela` electronics, `apa` apartments for rent, `hhh` all housing, `jjj` jobs, `ggg` gigs, `bbb` services. Any craigslist category abbreviation works."
+        },
+        "minPrice": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Min price — Keep only listings from this price (listings without a price are skipped when a price filter is set)."
+        },
+        "maxPrice": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Max price — Keep only listings up to this price."
+        },
+        "maxListings": {
+          "type": "integer",
+          "default": 100,
+          "minimum": 1,
+          "maximum": 360,
+          "description": "Max listings per search — For each term × area. Craigslist returns at most 360 listings per search."
+        }
+      },
+      "additionalProperties": false,
+      "anyOf": [
+        {
+          "required": [
+            "queries"
+          ]
+        },
+        {
+          "required": [
+            "areas"
+          ]
+        }
+      ]
+    },
+    "arrayFields": [],
+    "urlSourceFields": [],
+    "price": "$0.001 / listing"
+  },
+  {
+    "name": "jobstreet_scraper",
+    "actor": "webdatatools~jobstreet-scraper",
+    "title": "JobStreet Scraper (Malaysia, Singapore, PH, ID + JobsDB)",
+    "description": "Scrape JobStreet (Malaysia, Singapore, Philippines, Indonesia) and JobsDB (Hong Kong, Thailand) jobs by keyword and location: title, company, salary range, work type, classification, teaser, bullet points, date. Billed to your own Apify account: ~$0.001 per job (Apify free-plan price, lower on paid plans).",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "keywords": {
+          "type": "string",
+          "description": "Keywords — Job title, skill or company, several separated by `;` (e.g. `software engineer; data analyst`). Leave empty for all jobs. Example: \"developer\".",
+          "minLength": 1
+        },
+        "countries": {
+          "type": "string",
+          "description": "Countries — Sites to search, separated by `;`: `MY` Malaysia, `SG` Singapore, `PH` Philippines, `ID` Indonesia (JobStreet), `HK` Hong Kong, `TH` Thailand (JobsDB). Country names work too. Example: \"MY; SG\"."
+        },
+        "locations": {
+          "type": "string",
+          "description": "Locations — Optional cities or areas, separated by `;` (e.g. `Kuala Lumpur; Penang`). Every keyword is searched in every location.",
+          "minLength": 1
+        },
+        "sortBy": {
+          "type": "string",
+          "enum": [
+            "relevance",
+            "date"
+          ],
+          "default": "relevance",
+          "description": "Sort by — Relevance (the site’s default) or newest first. Options: relevance = Relevance; date = Newest first."
+        },
+        "maxJobs": {
+          "type": "integer",
+          "default": 60,
+          "minimum": 1,
+          "maximum": 3000,
+          "description": "Max jobs per search — For each keyword × country × location (30 per page)."
+        }
+      },
+      "additionalProperties": false,
+      "anyOf": [
+        {
+          "required": [
+            "keywords"
+          ]
+        },
+        {
+          "required": [
+            "locations"
+          ]
+        }
+      ]
+    },
+    "arrayFields": [],
+    "urlSourceFields": [],
+    "price": "$0.001 / job"
+  },
+  {
     "name": "stepstone_scraper",
     "actor": "webdatatools~stepstone-scraper",
     "title": "StepStone Scraper (Germany, Austria, Belgium Jobs)",
