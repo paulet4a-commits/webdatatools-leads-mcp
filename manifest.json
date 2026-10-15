@@ -1,0 +1,2009 @@
+{
+  "manifest_version": "0.3",
+  "name": "webdatatools-leads-mcp",
+  "display_name": "WebDataTools Leads, jobs & company data",
+  "version": "0.1.0",
+  "description": "Leads, jobs & company data tools for AI agents over MCP, backed by WebDataTools' Apify Actors. Uses your own Apify API token — billed to you, not us.",
+  "long_description": "32 leads, jobs & company data tools. Company profiles from a domain, hiring signals from ATS boards, Y Combinator companies, Wikidata enrichment, e-mail validation, OpenStreetMap places, market quotes and remote jobs.\n\nEvery tool call runs a WebDataTools Actor on your own Apify account (get a free token with monthly free credit at https://console.apify.com/settings/integrations), so usage is billed to you, never to the server author. The price per result is in each tool description.",
+  "author": {
+    "name": "WebDataTools",
+    "url": "https://apify.com/webdatatools"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/paulet4a-commits/webdatatools-leads-mcp"
+  },
+  "homepage": "https://apify.com/webdatatools",
+  "support": "https://github.com/paulet4a-commits/webdatatools-leads-mcp/issues",
+  "license": "MIT",
+  "keywords": [
+    "mcp",
+    "mcp-server",
+    "model-context-protocol",
+    "apify",
+    "ai-agent",
+    "lead-generation",
+    "company-data",
+    "hiring",
+    "jobs",
+    "email-validation",
+    "enrichment",
+    "b2b"
+  ],
+  "server": {
+    "type": "node",
+    "entry_point": "bin/cli.js",
+    "mcp_config": {
+      "command": "node",
+      "args": [
+        "${__dirname}/bin/cli.js"
+      ],
+      "env": {
+        "APIFY_TOKEN": "${user_config.apify_token}"
+      }
+    }
+  },
+  "compatibility": {
+    "platforms": [
+      "darwin",
+      "win32",
+      "linux"
+    ],
+    "runtimes": {
+      "node": ">=18.0.0"
+    }
+  },
+  "user_config": {
+    "apify_token": {
+      "type": "string",
+      "title": "Apify API token",
+      "description": "Your personal Apify API token. Get a free one (with monthly free credit) at https://console.apify.com/settings/integrations. Every tool call is billed to this account, never to the server author.",
+      "sensitive": true,
+      "required": true
+    }
+  },
+  "tools": [
+    {
+      "name": "career_site_jobs_api",
+      "description": "Career Site Jobs API finds which ATS a company uses (Greenhouse, Lever, Ashby, SmartRecruiters, Workday) from its domain or name and returns its open jobs in one unified format, $3 per 1,000 jobs. Billed to your own Apify account: ~$0.003 per job (Apify free-plan price, lower on paid plans).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "companies": {
+            "type": "string",
+            "description": "Companies — Company domains, names or careers/ATS URLs, separated by ;. e.g. \"stripe.com; notion.so; https://nvidia.wd5.myworkdayjobs.com/NVIDIAExternalCareerSite\". Workday companies need their myworkdayjobs.com URL. Example: \"stripe.com; ramp.com; palantir.com\".",
+            "minLength": 1
+          },
+          "company": {
+            "type": "string",
+            "description": "Company (singular alias) — Single company name/domain (alternative to 'companies') Example: \"\".",
+            "minLength": 1
+          },
+          "keywords": {
+            "type": "string",
+            "description": "Keywords — Keep jobs whose title/department/team contains one of these words, separated by ;. e.g. \"engineer; data\". Example: \"\"."
+          },
+          "location": {
+            "type": "string",
+            "description": "Location — Job location filter. Example: San Francisco; Remote Example: \"\"."
+          },
+          "remoteOnly": {
+            "type": "boolean",
+            "default": false,
+            "description": "Remote Only — Filter to remote jobs only"
+          },
+          "includeDescription": {
+            "type": "boolean",
+            "default": true,
+            "description": "Include Job Descriptions — Include the full job description text (default on)."
+          },
+          "maxJobsPerCompany": {
+            "type": "integer",
+            "default": 25,
+            "minimum": 1,
+            "maximum": 500,
+            "description": "Max Jobs per Company — Maximum number of jobs to fetch per company (default 25)"
+          }
+        },
+        "additionalProperties": false,
+        "anyOf": [
+          {
+            "required": [
+              "companies"
+            ]
+          },
+          {
+            "required": [
+              "company"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "workday_jobs_scraper",
+      "description": "Scrape job postings from Workday career sites Billed to your own Apify account: ~$0.001 per job (Apify free-plan price, lower on paid plans).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "careerSiteUrls": {
+            "type": "string",
+            "description": "Career Site URLs — Workday career site URLs, semicolon-separated. Example: https://nvidia.wd5.myworkdayjobs.com/NVIDIAExternalCareerSite; https://workday.wd5.myworkdayjobs.com/Workday Example: \"https://nvidia.wd5.myworkdayjobs.com/NVIDIAExternalCareerSite\".",
+            "minLength": 1
+          },
+          "keywords": {
+            "type": "string",
+            "description": "Keywords — Job search keywords, semicolon-separated. Example: engineer; manager; sales Example: \"\"."
+          },
+          "location": {
+            "type": "string",
+            "description": "Location — Job location filter. Example: San Francisco; Remote Example: \"\"."
+          },
+          "includeDescription": {
+            "type": "boolean",
+            "default": true,
+            "description": "Include Job Descriptions — Fetch each job page for the full description, exact post date, all locations and the hiring entity (one extra small request per job)."
+          },
+          "maxJobs": {
+            "type": "integer",
+            "default": 50,
+            "minimum": 1,
+            "maximum": 2000,
+            "description": "Max Jobs per Site — Maximum number of jobs to fetch per career site (default 50, max ~2000 per Workday's limits)."
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "careerSiteUrls"
+        ]
+      }
+    },
+    {
+      "name": "google_maps_scraper",
+      "description": "Google Maps Scraper extracts places from Google Maps search: name, category, address, phone, website, rating, review count, coordinates and today's hours, in any country, no browser, $2 per 1,000 places. Billed to your own Apify account: ~$0.002 per place (Apify free-plan price, lower on paid plans).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "searchQueries": {
+            "type": "string",
+            "description": "Search queries — Enter what to search: one term as a string, e.g. \"dentist\", several separated by semicolons, e.g. \"dentist; coffee shop\", or a JSON array, e.g. [\"dentist\", \"coffee shop\"]. Aliases: query, keyword, search, searchStringsArray. Example: \"dentist\".",
+            "minLength": 1
+          },
+          "location": {
+            "type": "string",
+            "description": "Location — Enter the location (city, region, country) for the search, e.g. \"Austin, TX\". Alias: locationQuery. Example: \"Austin, TX\".",
+            "minLength": 1
+          },
+          "maxPlacesPerSearch": {
+            "type": "integer",
+            "default": 20,
+            "minimum": 1,
+            "maximum": 120,
+            "description": "Max places per search — Maximum number of places to extract per search query (default 20, max 120). Google typically returns ~120 results per query."
+          },
+          "language": {
+            "type": "string",
+            "default": "en",
+            "description": "Language — Language for search results, e.g. \"en\" for English, \"tr\" for Turkish."
+          },
+          "country": {
+            "type": "string",
+            "default": "us",
+            "description": "Country — Country code for search results (2-letter ISO code), e.g. \"us\", \"uk\", \"tr\"."
+          },
+          "minRating": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 5,
+            "description": "Minimum rating — Optional: filter places with minimum rating (0-5), e.g. 4.0."
+          },
+          "skipClosedPlaces": {
+            "type": "boolean",
+            "default": false,
+            "description": "Skip closed places — Skip places that are permanently or temporarily closed."
+          },
+          "coordinates": {
+            "type": "object",
+            "description": "Coordinates — Optional: search by coordinates instead of location name. Provide lat, lng, and radiusMeters."
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "searchQueries"
+        ],
+        "anyOf": [
+          {
+            "required": [
+              "location"
+            ]
+          },
+          {
+            "required": [
+              "coordinates"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "2gis_places_scraper",
+      "description": "Scrape businesses from 2GIS search results in Russia, Kazakhstan, UAE and 9 more countries: name, category, address, coordinates, rating, reviews, opening hours, phones, website and social links. Contacts included in the price, no login. Billed to your own Apify account: ~$0.002 per place (Apify free-plan price, lower on paid plans).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "queries": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Search queries — What to search for, one per line — a category or a business name, in the local language works best, e.g. кафе, аптека, стоматология, coffee shop. Example: [\"кафе\"].",
+            "minItems": 1
+          },
+          "cities": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Cities — City slugs as they appear in 2GIS URLs, one per line, e.g. moscow, spb, novosibirsk, almaty, astana, dubai. Every query is searched in every city. Example: [\"moscow\"]."
+          },
+          "country": {
+            "type": "string",
+            "enum": [
+              "ru",
+              "kz",
+              "ae",
+              "kg",
+              "uz",
+              "az",
+              "am",
+              "ge",
+              "cy",
+              "cl",
+              "it",
+              "sa"
+            ],
+            "default": "ru",
+            "description": "2GIS site — Which 2GIS site the cities belong to. Options: ru = Russia (2gis.ru); kz = Kazakhstan (2gis.kz); ae = UAE (2gis.ae); kg = Kyrgyzstan (2gis.kg); uz = Uzbekistan (2gis.uz); az = Azerbaijan (2gis.az); am = Armenia (2gis.am); ge = Georgia (2gis.ge); cy = Cyprus (2gis.com.cy); cl = Chile (2gis.cl); it = Italy (2gis.it); sa = Saudi Arabia (2gis.sa)."
+          },
+          "startUrls": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "2GIS search URLs — Optional. Paste search URLs from any 2GIS site, e.g. https://2gis.kz/almaty/search/кофейня. Pagination is handled for you.",
+            "minItems": 1
+          },
+          "maxPlacesPerSearch": {
+            "type": "integer",
+            "default": 60,
+            "minimum": 1,
+            "maximum": 2000,
+            "description": "Max places per search — Stop after this many places for each query-city pair or URL, e.g. 60. Each place is one billed result. 2GIS itself shows at most ~60 places (5 pages) per search, so use several narrower queries for more."
+          },
+          "includeContacts": {
+            "type": "boolean",
+            "default": true,
+            "description": "Include contacts — Open each place's card for phones, e-mails, website and social links (VK, Telegram, WhatsApp…). Included in the price; turn off only for faster runs without contacts."
+          }
+        },
+        "additionalProperties": false,
+        "anyOf": [
+          {
+            "required": [
+              "queries"
+            ]
+          },
+          {
+            "required": [
+              "startUrls"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "linkedin_jobs_scraper",
+      "description": "LinkedIn Jobs Scraper returns public job listings from LinkedIn by keywords, location, and filters. Scrape job titles, companies, salaries, descriptions, and applicant counts from LinkedIn's public guest job search API. Billed to your own Apify account: ~$0.0015 per job (Apify free-plan price, lower on paid plans).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "keywords": {
+            "type": "string",
+            "description": "Search keywords — Job title or skills to search for, e.g. \"data analyst\". Separate several searches with a semicolon: \"python; golang\". Leave empty with a company filter to list all of a company's jobs. Example: \"software engineer\".",
+            "minLength": 1
+          },
+          "location": {
+            "type": "string",
+            "description": "Location — City, region or country, e.g. \"Berlin\", \"Austin, TX\" or \"Germany\". Leave empty to search worldwide. Example: \"United States\"."
+          },
+          "locations": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "More locations (optional) — Run the same search in several places, e.g. [\"London\", \"Manchester\"]. Combined with Location."
+          },
+          "datePosted": {
+            "type": "string",
+            "enum": [
+              "",
+              "past24h",
+              "pastWeek",
+              "pastMonth"
+            ],
+            "default": "",
+            "description": "Date Posted Filter — Filter jobs by posting date. Leave empty to include all jobs. Options:  = Any time; past24h = Past 24 hours; pastWeek = Past week; pastMonth = Past month."
+          },
+          "workType": {
+            "type": "array",
+            "items": {},
+            "default": [],
+            "description": "Work Type — Filter by work type (onsite, remote, hybrid). Leave empty to include all."
+          },
+          "experienceLevel": {
+            "type": "array",
+            "items": {},
+            "default": [],
+            "description": "Experience Level — Filter by experience level. Leave empty to include all. Valid values: internship, entry_level, associate, mid_level, senior, manager, director, executive."
+          },
+          "titleIncludes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Title must include — Keep only jobs whose title contains one of these words or phrases. Case-insensitive, whole words. Leave empty to keep all titles."
+          },
+          "titleExcludes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Title must not include — Drop jobs whose title contains one of these words or phrases, e.g. senior, staff, intern. Case-insensitive, whole words. Dropped jobs are not returned and not charged."
+          },
+          "excludeCompanies": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Exclude companies — Drop jobs from these company names (case-insensitive, whole names). Dropped jobs are not returned and not charged."
+          },
+          "externalApplyOnly": {
+            "type": "boolean",
+            "description": "Company site apply only — Return only jobs that apply on the company site. Costs one detail-page request per candidate job."
+          },
+          "jobType": {
+            "type": "array",
+            "items": {},
+            "default": [],
+            "description": "Job Type — Filter by job type (full-time, part-time, contract, temporary, internship, volunteer). Leave empty to include all."
+          },
+          "maxJobs": {
+            "type": "integer",
+            "default": 25,
+            "minimum": 1,
+            "maximum": 1000,
+            "description": "Maximum jobs to scrape — Maximum number of jobs to scrape, e.g. 100. LinkedIn search results are capped at ~1,000 total."
+          },
+          "includeDescription": {
+            "type": "boolean",
+            "default": true,
+            "description": "Include job descriptions — Fetch full job descriptions (requires extra API calls). Leave unchecked to skip descriptions."
+          },
+          "searchUrls": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Search URLs — Alternative: paste LinkedIn job search URLs (e.g., https://www.linkedin.com/jobs/search/?keywords=python&location=USA). Parameters will be mapped to the guest API. Example: [].",
+            "minItems": 1
+          }
+        },
+        "additionalProperties": false,
+        "anyOf": [
+          {
+            "required": [
+              "keywords"
+            ]
+          },
+          {
+            "required": [
+              "searchUrls"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "company_360",
+      "description": "Company 360 turns a domain into one rich profile row: contacts, tech stack, DNS/e-mail security, TLS/security headers, on-page SEO, hiring signals and company facts (HQ, employees, revenue, founders) merged from our own scraper suite. Billed to your own Apify account: ~$0.05 per company (Apify free-plan price, lower on paid plans).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "domains": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Domains — Enter the company domains to profile, one row is returned per domain, e.g. apify.com. Full URLs and www. prefixes are accepted and stripped automatically, so you can paste a list straight out of your CRM. Example: [\"apify.com\"].",
+            "minItems": 1
+          },
+          "includeContacts": {
+            "type": "boolean",
+            "default": true,
+            "description": "Include contacts — Fetch the homepage (and a common contact-page guess) for e-mail addresses, phone numbers and social-profile links."
+          },
+          "includeTechStack": {
+            "type": "boolean",
+            "default": true,
+            "description": "Include tech stack — Detect the CMS, e-commerce platform, analytics, ad pixels, chat widget and payment providers from the homepage and contact page. Runs inside this Actor — no extra charge."
+          },
+          "includeEmailSecurity": {
+            "type": "boolean",
+            "default": true,
+            "description": "Include DNS & e-mail security — Look up SPF/DMARC policy, mail provider, DNS provider, registrar and domain age directly (no sub-Actor call)."
+          },
+          "includeSecurityAudit": {
+            "type": "boolean",
+            "default": true,
+            "description": "Include security audit — Check the TLS certificate (validity, expiry) and HTTP security headers, and grade them 0-100 (A-F)."
+          },
+          "includeHiring": {
+            "type": "boolean",
+            "default": true,
+            "description": "Include hiring signals — Count open jobs and hiring velocity from the company's public ATS job board (Greenhouse, Lever, Ashby, Workable and more). Only returns data when a board exists under the domain's own name — most domains will not match and get a warning instead, not an error."
+          },
+          "includeCompanyFacts": {
+            "type": "boolean",
+            "default": true,
+            "description": "Include company facts — Look the company up on Wikidata for headquarters, employee count, revenue, founders, founding date and Crunchbase/LinkedIn IDs. Works best for companies with a Wikidata entry."
+          },
+          "includeSeo": {
+            "type": "boolean",
+            "default": true,
+            "description": "Include SEO audit — Audit the homepage's on-page SEO: a 0-100 score plus the list of issues found."
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "domains"
+        ]
+      }
+    },
+    {
+      "name": "hiring_signals",
+      "description": "Scrape company job postings and hiring signals from Greenhouse, Lever, Ashby and Workable job boards — one row per job, or one hiring summary per company. Billed to your own Apify account: ~$0.002 per result (Apify free-plan price, lower on paid plans).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "companies": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "minItems": 1,
+            "description": "Companies — Enter the companies whose job board you want to scrape. Use the ATS slug on its own, e.g. stripe, or paste a full job-board URL, e.g. https://boards.greenhouse.io/stripe, https://jobs.lever.co/spotify, https://jobs.ashbyhq.com/ashby, https://apply.workable.com/blueground/, https://jobs.smartrecruiters.com/smartrecruiters, https://bunq.recruitee.com, https://personio.jobs.personio.de, https://storytel.teamtailor.com, https://euna.bamboohr.com/careers/list or https://<tenant>.wd<N>.myworkdayjobs.com/<site>. A bare slug is probed against every board except Workday (which needs a full URL — a tenant and a site, not just a slug) and every board that actually has postings is returned. Example: [\"stripe\"]."
+          },
+          "outputMode": {
+            "type": "string",
+            "enum": [
+              "jobs",
+              "companies"
+            ],
+            "default": "jobs",
+            "description": "Output mode — Choose what one dataset row means. Pick \"One row per job\" to get every open posting (best for job aggregators and recruiters), or \"One row per company\" to get a single hiring summary per company with job counts, department and location breakdowns and a hiring-velocity score (best for sales intelligence and competitor watching). Options: jobs = One row per job; companies = One row per company (hiring summary)."
+          },
+          "maxJobsPerCompany": {
+            "type": "integer",
+            "default": 200,
+            "minimum": 1,
+            "maximum": 5000,
+            "description": "Max jobs per company — Enter how many of the newest postings to keep per company, e.g. 200. This caps both cost and row count in \"One row per job\" mode. It is deliberately ignored in \"One row per company\" mode, where the summary always counts the whole board so totals and hiring velocity stay accurate."
+          },
+          "includeDescriptions": {
+            "type": "boolean",
+            "default": false,
+            "description": "Include job descriptions — Turn this on to add the full job description as plain text (HTML stripped, truncated to 5,000 characters). Leave it off for faster, smaller runs — on Workable it also saves one extra request per job, because that board only serves descriptions from a per-job endpoint. SmartRecruiters and Workday never return a description here (their list endpoints carry no job body), regardless of this setting."
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "companies"
+        ]
+      }
+    },
+    {
+      "name": "yc_companies_scraper",
+      "description": "Y Combinator company directory scraper — batch, industry, hiring status, one-liner, description and founder names/titles/LinkedIn/Twitter for every YC-funded startup, one row per company. Billed to your own Apify account: ~$0.002 per result (Apify free-plan price, lower on paid plans).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "mode": {
+            "type": "string",
+            "enum": [
+              "companies",
+              "search"
+            ],
+            "default": "companies",
+            "description": "Mode — Pick \"Browse companies\" to list/filter the directory by batch, industry, status or hiring status, or \"Search by keyword\" to additionally match the query text against each company's name and description. Options: companies = Browse companies; search = Search by keyword."
+          },
+          "query": {
+            "type": "string",
+            "default": "",
+            "description": "Search text — Enter keywords to match against the company name, one-liner and description, e.g. \"AI agents\". Only used when mode is \"Search by keyword\", or as an extra filter on top of the other fields in \"Browse companies\" mode. Leave empty to skip text search."
+          },
+          "batches": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "default": [],
+            "description": "Batches — Enter YC batch codes to keep, e.g. W25, S25, F26. Leave empty to include every batch. Codes are case-insensitive and matched exactly against the company's batch field."
+          },
+          "industries": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "default": [],
+            "description": "Industries — Enter industry names to keep, e.g. B2B, Fintech, Healthcare. A company matches if it has at least one of the listed industries. Leave empty to include every industry."
+          },
+          "statuses": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "Active",
+                "Acquired",
+                "Public",
+                "Inactive"
+              ],
+              "enumTitles": [
+                "Active",
+                "Acquired",
+                "Public",
+                "Inactive"
+              ]
+            },
+            "default": [],
+            "description": "Company statuses — Select which company statuses to keep. Leave empty to include every status (most companies are Active). Options: Active = Active; Acquired = Acquired; Public = Public; Inactive = Inactive."
+          },
+          "isHiring": {
+            "type": "boolean",
+            "description": "Is hiring — Turn on to keep only companies currently marked as hiring on YC's directory, or leave this switch off (unset) to include both hiring and non-hiring companies. There is no third state for \"only non-hiring\" — untoggled means \"do not filter\"."
+          },
+          "maxCompanies": {
+            "type": "integer",
+            "default": 50,
+            "minimum": 1,
+            "maximum": 10000,
+            "description": "Max companies — Enter the maximum number of matching companies to return, e.g. 200. This is also the billed unit — the run stops as soon as it collects this many matches or runs out of companies to check."
+          },
+          "includeFounders": {
+            "type": "boolean",
+            "default": true,
+            "description": "Include founders — Keep this on to fetch each matched company's public YC profile page and extract founder name, title, LinkedIn and Twitter/X links. Turning it off skips one extra request per company and returns founders as null, which is much faster for large runs."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "wikidata_entity_enrichment",
+      "description": "Wikidata Entity & Company Enrichment resolves a QID, company name, or Wikipedia URL to its Wikidata item and returns facts (country, HQ, founders, CEO, employees, revenue), identifiers (ISIN, Crunchbase, LinkedIn) and social/media links — one row per entity. Billed to your own Apify account: ~$0.001 per result (Apify free-plan price, lower on paid plans).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "entities": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Entities — Enter a Wikidata QID (e.g. Q95), an entity name to search for (e.g. Apify), or a Wikipedia article URL (e.g. https://en.wikipedia.org/wiki/Stripe,_Inc.) — one row is returned per entity. Names are resolved via Wikidata search, so the closest match wins. Example: [\"Q95\"].",
+            "minItems": 1
+          },
+          "language": {
+            "type": "string",
+            "default": "en",
+            "description": "Language — Enter the Wikidata/Wikipedia language code to use for labels, descriptions and search, e.g. en, de, fr. Falls back to English internally when a translation is missing."
+          },
+          "entityType": {
+            "type": "string",
+            "enum": [
+              "any",
+              "company",
+              "person",
+              "place",
+              "product"
+            ],
+            "default": "any",
+            "description": "Entity type filter — When resolving a name search, prefer a candidate whose Wikidata instance-of (P31) matches this type over the plain top search result. Leave as 'any' to just take the best text match. Options: any = Any; company = Company; person = Person; place = Place; product = Product."
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "entities"
+        ]
+      }
+    },
+    {
+      "name": "email_validator",
+      "description": "Email Validator checks syntax, MX/A DNS records, disposable/free-provider/role classification and typo suggestions for a list of email addresses — one scored row per address, no SMTP mailbox probing. Billed to your own Apify account: ~$0.0005 per email (Apify free-plan price, lower on paid plans).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "emails": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Emails — Enter the email addresses to validate, one row is returned per address, e.g. jane.doe@example.com. Paste straight out of a CRM export or lead list; blank lines and duplicates are ignored. Example: [\"support@apify.com\"].",
+            "minItems": 1
+          },
+          "checkMx": {
+            "type": "boolean",
+            "default": true,
+            "description": "Check MX / A records — Keep this on to look up the domain's MX records (falling back to an A record) over DNS-over-HTTPS. Turning it off skips DNS entirely and scores purely on syntax and list matches — faster, but cannot tell whether the domain can receive mail at all."
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "emails"
+        ]
+      }
+    },
+    {
+      "name": "overpass_poi_extractor",
+      "description": "OpenStreetMap POI Extractor returns shops, cafes, restaurants and any tagged place within a radius, a bounding box, or a named area — one row per point of interest, powered by the free Overpass API. Billed to your own Apify account: ~$0.0005 per place (Apify free-plan price, lower on paid plans).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "mode": {
+            "type": "string",
+            "enum": [
+              "radius",
+              "bbox",
+              "area"
+            ],
+            "description": "Search mode — How to define the search area: \"radius\" around a point, \"bbox\" (a bounding box), or \"area\" (a place name resolved via Nominatim, e.g. a city or district). Options: radius = Radius around a point; bbox = Bounding box; area = Named area (city/district). Example: \"radius\".",
+            "minLength": 1
+          },
+          "latitude": {
+            "type": "number",
+            "description": "Latitude (radius mode) — Center point latitude for radius mode, e.g. 50.0755 for Prague's city centre. Ignored in bbox and area mode. Example: 50.0755."
+          },
+          "longitude": {
+            "type": "number",
+            "description": "Longitude (radius mode) — Center point longitude for radius mode, e.g. 14.4378 for Prague's city centre. Ignored in bbox and area mode. Example: 14.4378."
+          },
+          "radiusMeters": {
+            "type": "integer",
+            "default": 1000,
+            "minimum": 1,
+            "maximum": 20000,
+            "description": "Radius in meters (radius mode) — How far from the center point to search, in meters, e.g. 1000 for a 1 km radius. Larger radii return more results and take longer to query."
+          },
+          "bbox": {
+            "type": "string",
+            "description": "Bounding box (bbox mode) — Bounding box as \"south,west,north,east\" decimal degrees, e.g. \"50.05,14.35,50.13,14.55\" for central Prague. Required when Search mode is \"bbox\". Example: \"50.05,14.35,50.13,14.55\".",
+            "minLength": 1
+          },
+          "areaName": {
+            "type": "string",
+            "description": "Area name (area mode) — A place name to search inside, e.g. \"Prague, Czechia\" or \"Brooklyn, New York\". Resolved to an OpenStreetMap area via Nominatim. Required when Search mode is \"area\". Example: \"Prague, Czechia\".",
+            "minLength": 1
+          },
+          "categories": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "OSM categories (key=value tags) — OpenStreetMap tags to search for, each as \"key=value\", e.g. \"amenity=cafe\" or \"shop=supermarket\". Every category is searched and merged into one result list. Example: [\"amenity=cafe\",\"amenity=restaurant\"].",
+            "minItems": 1
+          },
+          "maxResults": {
+            "type": "integer",
+            "default": 100,
+            "minimum": 1,
+            "maximum": 20000,
+            "description": "Max results — Maximum number of POIs to return, e.g. 500. Overpass results beyond this count are dropped before they are pushed to the dataset."
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "mode",
+          "categories"
+        ],
+        "anyOf": [
+          {
+            "required": [
+              "latitude",
+              "longitude"
+            ]
+          },
+          {
+            "required": [
+              "bbox"
+            ]
+          },
+          {
+            "required": [
+              "areaName"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "market_quotes",
+      "description": "Live-delayed stock, ETF, index, cryptocurrency and foreign-exchange quotes in one call — price, change, day range, volume and optional history, from free public endpoints with no API key. Billed to your own Apify account: ~$0.001 per Quote (Apify free-plan price, lower on paid plans).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "symbols": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Symbols — Enter one symbol per line: a stock/ETF/index ticker (AAPL, ^GSPC), a crypto ticker or pair (BTC, BTC-USD), or an FX pair (EUR/USD, EURUSD=X, USD/EUR). Example: [\"AAPL\",\"BTC-USD\",\"EUR/USD\"].",
+            "minItems": 1
+          },
+          "assetType": {
+            "type": "string",
+            "enum": [
+              "auto",
+              "stock",
+              "crypto",
+              "fx"
+            ],
+            "default": "auto",
+            "description": "Asset type — Choose auto to detect each symbol's type from its shape (recommended), or force every symbol in this run to be read as stock, crypto or fx. Options: auto = Auto-detect; stock = Stock / ETF / index; crypto = Cryptocurrency; fx = Foreign exchange."
+          },
+          "includeHistory": {
+            "type": "boolean",
+            "default": false,
+            "description": "Include price history — Keep this off for a lean row per symbol. Turn it on to add a history array of daily closing prices going back historyDays days."
+          },
+          "historyDays": {
+            "type": "integer",
+            "default": 30,
+            "minimum": 1,
+            "maximum": 365,
+            "description": "History days — Enter how many days of daily closes to include in history when includeHistory is on, e.g. 30."
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "symbols"
+        ]
+      }
+    },
+    {
+      "name": "yahoo_finance_scraper",
+      "description": "Scrape Yahoo Finance for any ticker: live-delayed price, market cap, P/E, EPS, dividends, sector, employees, analyst targets and ratings, plus optional income statements, balance sheet, cash flow, ownership, insider trades, news and price history. No API key. Billed to your own Apify account: ~$0.0015 per symbol (Apify free-plan price, lower on paid plans).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "symbols": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Symbols — Yahoo Finance tickers, one per line: stocks and ETFs (AAPL, SPY), international listings (VOD.L, 7203.T, THYAO.IS), indices (^GSPC), crypto (BTC-USD), FX (EURUSD=X), futures (GC=F). Example: [\"AAPL\",\"MSFT\"].",
+            "minItems": 1
+          },
+          "includeFinancials": {
+            "type": "boolean",
+            "default": false,
+            "description": "Include financial statements — Add annual and quarterly income statements, annual balance sheet and cash flow, and quarterly EPS actual vs estimate (stocks only)."
+          },
+          "includeOwnership": {
+            "type": "boolean",
+            "default": false,
+            "description": "Include ownership — Add insider and institutional ownership percentages, the top 10 institutional holders and recent insider transactions (stocks only)."
+          },
+          "newsCount": {
+            "type": "integer",
+            "default": 5,
+            "minimum": 0,
+            "maximum": 20,
+            "description": "News articles per symbol — Recent news headlines to attach to each symbol, e.g. 5. Set 0 for none."
+          },
+          "historyRange": {
+            "type": "string",
+            "enum": [
+              "none",
+              "1mo",
+              "3mo",
+              "6mo",
+              "1y",
+              "2y",
+              "5y",
+              "max"
+            ],
+            "default": "none",
+            "description": "Price history — Optional. Attach daily OHLCV price history for this range. Options: none = None; 1mo = 1 month; 3mo = 3 months; 6mo = 6 months; 1y = 1 year; 2y = 2 years; 5y = 5 years; max = Max."
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "symbols"
+        ]
+      }
+    },
+    {
+      "name": "dexscreener_scraper",
+      "description": "Get DEX pair data from DexScreener's official public API: price, 5m-24h price change, volume, buys/sells, liquidity, FDV, market cap and creation date for any token or pair on Solana, Ethereum, Base, BSC and 80+ chains — plus the latest token profiles and top boosted tokens. Billed to your own Apify account: ~$0.0005 per row (Apify free-plan price, lower on paid plans).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "mode": {
+            "type": "string",
+            "enum": [
+              "search",
+              "tokens",
+              "pairs",
+              "latestProfiles",
+              "topBoosted",
+              "latestBoosted"
+            ],
+            "default": "search",
+            "description": "Mode — search: pairs matching a token name, symbol or address. tokens: every pair of the given token addresses. pairs: specific pairs. latestProfiles: newest token profiles. topBoosted / latestBoosted: tokens with the most / newest DexScreener boosts. Options: search = Search pairs; tokens = Pairs of token addresses; pairs = Specific pairs; latestProfiles = Latest token profiles; topBoosted = Top boosted tokens; latestBoosted = Latest boosted tokens."
+          },
+          "queries": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Search queries — For search mode: token names, symbols or addresses, one per line, e.g. PEPE, WIF, SOL/USDC. DexScreener returns up to 30 pairs per query. Example: [\"PEPE\"].",
+            "minItems": 1
+          },
+          "chainId": {
+            "type": "string",
+            "description": "Chain — For tokens and pairs mode with bare addresses, e.g. solana, ethereum, base, bsc, arbitrum. In profile/boost modes it filters to this chain."
+          },
+          "tokenAddresses": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Token addresses — For tokens mode: token contract addresses, one per line (bare with Chain set, or as chain/address, e.g. ethereum/0x6982508145454Ce325dDbE47a25d4ec3d2311933).",
+            "minItems": 1
+          },
+          "pairAddresses": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Pair addresses or DexScreener URLs — For pairs mode: pair addresses (with Chain set), chain/address, or DexScreener pair URLs.",
+            "minItems": 1
+          },
+          "minLiquidityUsd": {
+            "type": "integer",
+            "default": 0,
+            "minimum": 0,
+            "description": "Minimum liquidity (USD) — Skip pairs with less pool liquidity than this, e.g. 10000 to drop dust and rug pools. 0 keeps everything."
+          },
+          "maxItems": {
+            "type": "integer",
+            "default": 100,
+            "minimum": 1,
+            "maximum": 10000,
+            "description": "Max rows — Stop after this many rows in total. Each row is one billed result."
+          }
+        },
+        "additionalProperties": false,
+        "anyOf": [
+          {
+            "required": [
+              "queries"
+            ]
+          },
+          {
+            "required": [
+              "tokenAddresses"
+            ]
+          },
+          {
+            "required": [
+              "pairAddresses"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "polymarket_scraper",
+      "description": "Scrape Polymarket prediction markets: question, outcomes with live prices (implied probabilities), 24h and total volume, liquidity, bid/ask, end date and event. Rank by volume or liquidity, filter by tag, or search by text. No API key. Billed to your own Apify account: ~$0.001 per market (Apify free-plan price, lower on paid plans).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "mode": {
+            "type": "string",
+            "enum": [
+              "markets",
+              "events"
+            ],
+            "default": "markets",
+            "description": "Mode — markets: individual markets ranked by the chosen sort. events: events (e.g. \"Fed decision in December\") expanded into all their markets, with event tags. Options: markets = Markets; events = Events (all markets of each event)."
+          },
+          "query": {
+            "type": "string",
+            "description": "Search text — Optional. Search Polymarket by text, e.g. bitcoin, election, Fed. Returns the markets of the matching events; overrides Mode, Tag and Sort."
+          },
+          "tag": {
+            "type": "string",
+            "description": "Tag — Optional. Only markets/events with this Polymarket tag slug, e.g. politics, crypto, sports, economy."
+          },
+          "sortBy": {
+            "type": "string",
+            "enum": [
+              "volume24hr",
+              "volume",
+              "liquidity",
+              "endDate",
+              "createdAt"
+            ],
+            "default": "volume24hr",
+            "description": "Sort by — Ranking for markets/events mode. End date sorts soonest first; the others sort highest/newest first. Options: volume24hr = 24-hour volume; volume = Total volume; liquidity = Liquidity; endDate = End date (soonest); createdAt = Newest."
+          },
+          "activeOnly": {
+            "type": "boolean",
+            "default": true,
+            "description": "Active markets only — Skip closed and resolved markets."
+          },
+          "maxItems": {
+            "type": "integer",
+            "default": 50,
+            "minimum": 1,
+            "maximum": 10000,
+            "description": "Max markets — Stop after this many markets, e.g. 50. Each market is one billed result."
+          },
+          "debug": {
+            "type": "boolean",
+            "default": false,
+            "description": "Save raw API responses — Store raw API responses in the key-value store, for troubleshooting."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "stocktwits_scraper",
+      "description": "Scrape StockTwits messages for any stock or crypto ticker with Bullish/Bearish sentiment, likes, author stats and the price at posting time — or the current trending symbols with watchlist counts. Public API, no login. Billed to your own Apify account: ~$0.0005 per message (Apify free-plan price, lower on paid plans).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "mode": {
+            "type": "string",
+            "enum": [
+              "symbols",
+              "trending"
+            ],
+            "description": "Mode — symbols: the latest messages for each ticker below. trending: StockTwits' current trending symbols with watchlist counts and a summary of why they trend. Options: symbols = Messages for symbols; trending = Trending symbols. Example: \"symbols\".",
+            "minLength": 1
+          },
+          "symbols": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Symbols — Tickers, one per line, e.g. AAPL, TSLA, SPY. Crypto uses the .X suffix, e.g. BTC.X, ETH.X. Example: [\"AAPL\"].",
+            "minItems": 1
+          },
+          "maxMessagesPerSymbol": {
+            "type": "integer",
+            "default": 100,
+            "minimum": 1,
+            "maximum": 5000,
+            "description": "Max messages per symbol — Newest messages to collect for each symbol, e.g. 100. StockTwits serves 30 per page. Each message is one billed result."
+          },
+          "sentimentOnly": {
+            "type": "string",
+            "enum": [
+              "",
+              "Bullish",
+              "Bearish"
+            ],
+            "default": "",
+            "description": "Only messages tagged — Optional. Keep only messages whose author tagged them Bullish or Bearish. Options:  = Any (no filter); Bullish = Bullish only; Bearish = Bearish only."
+          }
+        },
+        "additionalProperties": false,
+        "anyOf": [
+          {
+            "required": [
+              "symbols"
+            ]
+          },
+          {
+            "required": [
+              "mode"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "economic_calendar_scraper",
+      "description": "This week's macro-economic calendar as clean JSON: event, currency, time in UTC, High/Medium/Low impact, forecast and previous figures as text and numbers. Filter by currency and impact. For traders, bots and dashboards. Billed to your own Apify account: ~$0.0005 per event (Apify free-plan price, lower on paid plans).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "currencies": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Currencies — Optional. Keep only events for these currencies, one per line, e.g. USD, EUR, GBP, JPY. Leave empty for all (AUD, CAD, CHF, CNY, EUR, GBP, JPY, NZD, USD and global events marked All)."
+          },
+          "minImpact": {
+            "type": "string",
+            "enum": [
+              "all",
+              "low",
+              "medium",
+              "high"
+            ],
+            "default": "all",
+            "description": "Minimum impact — Keep events at or above this expected market impact. 'All' also keeps bank holidays. Options: all = All (incl. holidays); low = Low and up; medium = Medium and up; high = High only."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "crypto_fear_greed_index",
+      "description": "Get the Crypto Fear & Greed Index — today's value and daily history back to 2018 — as clean rows: date, 0-100 value, sentiment (Extreme Fear to Extreme Greed) and day-over-day change. For trading bots, dashboards and backtests. No API key. Billed to your own Apify account: ~$0.0005 per day (Apify free-plan price, lower on paid plans).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "days": {
+            "type": "integer",
+            "default": 30,
+            "minimum": 0,
+            "maximum": 10000,
+            "description": "Days of history — How many days to return, newest first, e.g. 30. Enter 0 for the full history (daily since February 2018, about 2,800 rows). Each day is one billed result."
+          },
+          "includeChange": {
+            "type": "boolean",
+            "default": true,
+            "description": "Include day-over-day change — Add the change in points and the previous day's sentiment to every row."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "remote_jobs_aggregator",
+      "description": "Merge and de-duplicate remote job listings from RemoteOK, We Work Remotely and Hacker News' Who is Hiring thread into one clean row per job — title, company, salary, tags and apply link. Billed to your own Apify account: ~$0.001 per Job (Apify free-plan price, lower on paid plans).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "sources": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "remoteok",
+                "weworkremotely",
+                "hackernews"
+              ],
+              "enumTitles": [
+                "RemoteOK",
+                "We Work Remotely",
+                "Hacker News (Who is hiring?)"
+              ]
+            },
+            "default": [
+              "remoteok",
+              "weworkremotely",
+              "hackernews"
+            ],
+            "description": "Feeds to aggregate — Choose which public feeds to merge. remoteok reads RemoteOK's JSON API, weworkremotely reads its main RSS feed, and hackernews reads the current month's \"Who is hiring?\" thread on Hacker News. Options: remoteok = RemoteOK; weworkremotely = We Work Remotely; hackernews = Hacker News (Who is hiring?)."
+          },
+          "keywords": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "default": [],
+            "description": "Keywords (optional) — Enter words or phrases to keep only matching jobs, e.g. python, remote react. Matching is case-insensitive against the job title, company name and tags. Leave empty to keep every job."
+          },
+          "maxJobs": {
+            "type": "integer",
+            "default": 100,
+            "minimum": 1,
+            "maximum": 2000,
+            "description": "Max jobs — Enter the maximum number of job rows to return after merging and de-duplicating every feed, e.g. 100."
+          },
+          "postedWithinDays": {
+            "type": "integer",
+            "default": 30,
+            "minimum": 0,
+            "maximum": 3650,
+            "description": "Posted within (days) — Enter how many days back to keep a job by its posted date, e.g. 30. A job with no known posted date is always kept. Set to 0 to disable this filter."
+          },
+          "greenhouseBoards": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "default": [],
+            "description": "Greenhouse boards (optional) — Enter Greenhouse board slugs to fold into the same feed, e.g. stripe (from https://boards.greenhouse.io/stripe). A wrong slug returns one row with an error message instead of failing the run."
+          },
+          "ashbyBoards": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "default": [],
+            "description": "Ashby boards (optional) — Enter Ashby job-board slugs to fold into the same feed, e.g. ashby (from https://jobs.ashbyhq.com/ashby). A wrong slug returns one row with an error message instead of failing the run."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "greenhouse_jobs_scraper",
+      "description": "Greenhouse Jobs Scraper extracts job listings from Greenhouse job boards via the public boards API. Scrape job titles, descriptions, locations, compensation, and more from any Greenhouse-powered careers page. Billed to your own Apify account: ~$0.001 per job (Apify free-plan price, lower on paid plans).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "companies": {
+            "type": "string",
+            "description": "Company/Board — Enter the Greenhouse board slug (e.g. stripe) or a careers URL (e.g. https://boards.greenhouse.io/stripe). Separate multiple companies with semicolons. Example: \"stripe\".",
+            "minLength": 1
+          },
+          "companyList": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Company list (alternative) — Optional: array of board slugs or URLs, alternative to companies field. Example: [].",
+            "minItems": 1
+          },
+          "keywords": {
+            "type": "string",
+            "description": "Job title keywords — Optional: filter jobs by keywords in the title, e.g. 'engineer'. Leave empty to include all jobs."
+          },
+          "location": {
+            "type": "string",
+            "description": "Location — Optional: filter jobs by location substring, e.g. 'San Francisco' or 'Remote'."
+          },
+          "department": {
+            "type": "string",
+            "description": "Department — Optional: filter jobs by department name."
+          },
+          "remoteOnly": {
+            "type": "boolean",
+            "default": false,
+            "description": "Remote jobs only — If true, return only remote jobs."
+          },
+          "includeDescription": {
+            "type": "boolean",
+            "default": true,
+            "description": "Include job descriptions — If true, fetch and include the full job description (HTML and plain text)."
+          },
+          "maxJobs": {
+            "type": "integer",
+            "default": 50,
+            "minimum": 1,
+            "maximum": 1000,
+            "description": "Max jobs per company — Maximum number of jobs to fetch per company, e.g. 50. Default 50."
+          }
+        },
+        "additionalProperties": false,
+        "anyOf": [
+          {
+            "required": [
+              "companies"
+            ]
+          },
+          {
+            "required": [
+              "companyList"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "lever_jobs_scraper",
+      "description": "Lever Jobs Scraper extracts job listings from Lever job boards via the public API. Lever powers careers pages for companies like Palantir, Figma, and many others. Extract job titles, descriptions, locations, and more from any Lever-powered careers page without authentication. Billed to your own Apify account: ~$0.001 per job (Apify free-plan price, lower on paid plans).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "companies": {
+            "type": "string",
+            "description": "Company/Board — Enter the Lever company slug (e.g. palantir) or a careers URL (e.g. https://jobs.lever.co/palantir). Separate multiple companies with semicolons. Example: \"palantir\".",
+            "minLength": 1
+          },
+          "companyList": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Company list (alternative) — Optional: array of board slugs or URLs, alternative to companies field. Example: [].",
+            "minItems": 1
+          },
+          "keywords": {
+            "type": "string",
+            "description": "Job title keywords — Optional: filter jobs by keywords in the title, e.g. 'engineer'. Leave empty to include all jobs."
+          },
+          "location": {
+            "type": "string",
+            "description": "Location — Optional: filter jobs by location substring, e.g. 'San Francisco' or 'Remote'."
+          },
+          "department": {
+            "type": "string",
+            "description": "Department — Optional: filter jobs by department name."
+          },
+          "remoteOnly": {
+            "type": "boolean",
+            "default": false,
+            "description": "Remote jobs only — If true, return only remote jobs."
+          },
+          "includeDescription": {
+            "type": "boolean",
+            "default": true,
+            "description": "Include job descriptions — If true, fetch and include the full job description (HTML and plain text)."
+          },
+          "maxJobs": {
+            "type": "integer",
+            "default": 50,
+            "minimum": 1,
+            "maximum": 1000,
+            "description": "Max jobs per company — Maximum number of jobs to fetch per company, e.g. 50. Default 50."
+          }
+        },
+        "additionalProperties": false,
+        "anyOf": [
+          {
+            "required": [
+              "companies"
+            ]
+          },
+          {
+            "required": [
+              "companyList"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "ashby_jobs_scraper",
+      "description": "Ashby Jobs Scraper extracts job listings from Ashby job boards. Ashby powers careers pages for companies like Ramp, Scale AI, and others. Get job titles, descriptions, locations, compensation, and more from any Ashby-powered careers page. Billed to your own Apify account: ~$0.001 per job (Apify free-plan price, lower on paid plans).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "companies": {
+            "type": "string",
+            "description": "Company/Board — Enter the Ashby company slug (e.g. ramp) or a careers URL (e.g. https://jobs.ashbyhq.com/ramp). Separate multiple companies with semicolons. Example: \"ramp\".",
+            "minLength": 1
+          },
+          "companyList": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Company list (alternative) — Optional: array of company slugs or URLs. Example: [].",
+            "minItems": 1
+          },
+          "keywords": {
+            "type": "string",
+            "description": "Job title keywords — Optional: filter by keywords in title."
+          },
+          "location": {
+            "type": "string",
+            "description": "Location — Optional: filter by location."
+          },
+          "department": {
+            "type": "string",
+            "description": "Department — Optional: filter by department."
+          },
+          "remoteOnly": {
+            "type": "boolean",
+            "default": false,
+            "description": "Remote jobs only — Return only remote jobs."
+          },
+          "includeDescription": {
+            "type": "boolean",
+            "default": true,
+            "description": "Include job descriptions — Fetch full job descriptions."
+          },
+          "maxJobs": {
+            "type": "integer",
+            "default": 50,
+            "minimum": 1,
+            "maximum": 1000,
+            "description": "Max jobs per company — Default 50."
+          }
+        },
+        "additionalProperties": false,
+        "anyOf": [
+          {
+            "required": [
+              "companies"
+            ]
+          },
+          {
+            "required": [
+              "companyList"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "smartrecruiters_jobs_scraper",
+      "description": "SmartRecruiters Jobs Scraper extracts job listings from SmartRecruiters job boards. SmartRecruiters powers careers pages for companies like Bosch, Visa, and many others. Get job titles, locations, employment types, and more from any SmartRecruiters-powered careers page. Billed to your own Apify account: ~$0.001 per job (Apify free-plan price, lower on paid plans).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "companies": {
+            "type": "string",
+            "description": "Company/Board — Enter the SmartRecruiters company slug (e.g. BoschGroup) or a careers URL (e.g. https://jobs.smartrecruiters.com/BoschGroup). Separate multiple with semicolons. Example: \"BoschGroup\".",
+            "minLength": 1
+          },
+          "companyList": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Company list (alternative) — Optional: array of company slugs or URLs. Example: [].",
+            "minItems": 1
+          },
+          "keywords": {
+            "type": "string",
+            "description": "Job title keywords — Optional: filter by keywords."
+          },
+          "location": {
+            "type": "string",
+            "description": "Location — Optional: filter by location."
+          },
+          "department": {
+            "type": "string",
+            "description": "Department — Optional: filter by department."
+          },
+          "remoteOnly": {
+            "type": "boolean",
+            "default": false,
+            "description": "Remote jobs only — Return only remote jobs."
+          },
+          "includeDescription": {
+            "type": "boolean",
+            "default": false,
+            "description": "Include job descriptions — Note: SmartRecruiters API does not include descriptions in the listing endpoint."
+          },
+          "maxJobs": {
+            "type": "integer",
+            "default": 50,
+            "minimum": 1,
+            "maximum": 1000,
+            "description": "Max jobs per company — Default 50."
+          }
+        },
+        "additionalProperties": false,
+        "anyOf": [
+          {
+            "required": [
+              "companies"
+            ]
+          },
+          {
+            "required": [
+              "companyList"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "seek_jobs_scraper",
+      "description": "Scrape job listings from Seek.com.au and Seek.co.nz. Extract job details including title, company, location, salary, work type, and description. Billed to your own Apify account: ~$0.001 per job (Apify free-plan price, lower on paid plans).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "keywords": {
+            "type": "string",
+            "description": "Keywords — Job search keywords, separated by semicolons (e.g. 'data analyst; machine learning engineer') Example: \"software engineer\".",
+            "minLength": 1
+          },
+          "keywordsList": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Keywords (array) — Alternative: enter keywords as an array Example: [].",
+            "minItems": 1
+          },
+          "location": {
+            "type": "string",
+            "description": "Location — Job location (e.g. 'Sydney', 'Melbourne', 'New Zealand'). Leave empty to search nationwide. Example: \"Sydney\"."
+          },
+          "country": {
+            "type": "string",
+            "enum": [
+              "AU",
+              "NZ"
+            ],
+            "default": "AU",
+            "description": "Country — Country to search: AU (Australia) or NZ (New Zealand)"
+          },
+          "workType": {
+            "type": "string",
+            "description": "Work Type — Filter by work type (e.g. 'Full time', 'Part time', 'Contract'). Leave empty for all. Example: \"\"."
+          },
+          "dateRange": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "Posted within (days) — Filter jobs posted within the last N days (e.g. 7, 30) Example: 30."
+          },
+          "salaryRange": {
+            "type": "string",
+            "description": "Salary range — Filter by salary range if supported by Seek API Example: \"\"."
+          },
+          "maxJobs": {
+            "type": "integer",
+            "default": 50,
+            "minimum": 1,
+            "maximum": 500,
+            "description": "Max jobs — Maximum number of jobs to scrape (default 50, max will be limited by your account plan)"
+          }
+        },
+        "additionalProperties": false,
+        "anyOf": [
+          {
+            "required": [
+              "keywords"
+            ]
+          },
+          {
+            "required": [
+              "keywordsList"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "dice_jobs_scraper",
+      "description": "Scrape job listings from Dice.com. Extract job details including title, company, location, salary, employment type, remote status, and description. Billed to your own Apify account: ~$0.001 per job (Apify free-plan price, lower on paid plans).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "keywords": {
+            "type": "string",
+            "description": "Keywords — Job search keywords, separated by semicolons (e.g. 'python; devops; kubernetes') Example: \"python\".",
+            "minLength": 1
+          },
+          "keywordsList": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Keywords (array) — Alternative: enter keywords as an array Example: [].",
+            "minItems": 1
+          },
+          "location": {
+            "type": "string",
+            "description": "Location — Job location (e.g. 'New York', 'San Francisco', 'Remote'). Leave empty to search nationwide. Example: \"New York\"."
+          },
+          "employmentType": {
+            "type": "string",
+            "description": "Employment Type — Filter by employment type (e.g. 'Full-time', 'Contract', 'Part-time'). Leave empty for all. Example: \"\"."
+          },
+          "postedDate": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "Posted within (days) — Filter jobs posted within the last N days (e.g. 7, 30) Example: 30."
+          },
+          "isRemote": {
+            "type": "boolean",
+            "default": false,
+            "description": "Remote jobs only — Filter to show only remote job opportunities"
+          },
+          "maxJobs": {
+            "type": "integer",
+            "default": 50,
+            "minimum": 1,
+            "maximum": 500,
+            "description": "Max jobs — Maximum number of jobs to scrape (default 50, max will be limited by your account plan)"
+          }
+        },
+        "additionalProperties": false,
+        "anyOf": [
+          {
+            "required": [
+              "keywords"
+            ]
+          },
+          {
+            "required": [
+              "keywordsList"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "autoscout24_scraper",
+      "description": "AutoScout24 Scraper extracts car listings from any AutoScout24 country site: make, model, price, mileage, registration, fuel, power, seller and location, per 1,000 listings. Billed to your own Apify account: ~$0.001 per listing (Apify free-plan price, lower on paid plans).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "searchUrls": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Search URLs — Enter AutoScout24 search result URLs from any domain (.com, .de, .it, .fr, .nl, .be, .at, .es). Example: https://www.autoscout24.com/lst?atype=C&mmvco=70000 Example: [].",
+            "minItems": 1
+          },
+          "urls": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "URLs (alias) — Alias for searchUrls - use either searchUrls or urls Example: [].",
+            "minItems": 1
+          },
+          "make": {
+            "type": "string",
+            "description": "Car make/brand — Car make (brand) to search for, e.g. BMW, Mercedes, Audi. Used if no search URLs provided. Example: \"\".",
+            "minLength": 1
+          },
+          "model": {
+            "type": "string",
+            "description": "Car model — Car model to search for, e.g. 3 Series, C-Class. Used if no search URLs provided. Example: \"\"."
+          },
+          "priceFrom": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Price from — Minimum price in EUR. Used if no search URLs provided. Example: 0."
+          },
+          "priceTo": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Price to — Maximum price in EUR. Used if no search URLs provided. Example: 999999."
+          },
+          "yearFrom": {
+            "type": "integer",
+            "minimum": 1950,
+            "description": "Year from — Minimum registration year. Used if no search URLs provided. Example: 2000."
+          },
+          "yearTo": {
+            "type": "integer",
+            "minimum": 1950,
+            "description": "Year to — Maximum registration year. Used if no search URLs provided. Example: 2026."
+          },
+          "mileageTo": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Mileage to — Maximum mileage in km. Used if no search URLs provided. Example: 999999."
+          },
+          "fuel": {
+            "type": "string",
+            "enum": [
+              "",
+              "petrol",
+              "diesel",
+              "lpg",
+              "cng",
+              "ethanol",
+              "hybrid",
+              "electric"
+            ],
+            "description": "Fuel type — petrol, diesel, electric, hybrid, lpg, cng or hydrogen. Example: \"\"."
+          },
+          "country": {
+            "type": "string",
+            "description": "Country code — Country filter as an ISO code: de, it, at, be, es, fr, lu, nl (converted to AutoScout24's own codes). Example: \"de\"."
+          },
+          "zip": {
+            "type": "string",
+            "description": "ZIP code — ZIP code for location search. Used if no search URLs provided. Example: \"\"."
+          },
+          "radius": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 500,
+            "description": "Search radius — Search radius in km from ZIP code. Used if no search URLs provided. Example: 50."
+          },
+          "maxListings": {
+            "type": "integer",
+            "default": 40,
+            "minimum": 1,
+            "maximum": 400,
+            "description": "Max listings — Maximum listings per search (each search URL or the filter search)."
+          }
+        },
+        "additionalProperties": false,
+        "anyOf": [
+          {
+            "required": [
+              "searchUrls"
+            ]
+          },
+          {
+            "required": [
+              "urls"
+            ]
+          },
+          {
+            "required": [
+              "make"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "rightmove_scraper",
+      "description": "Rightmove Scraper extracts UK property listings for sale or to rent: address, price, bedrooms, type, tenure, coordinates, agent and phone, from a place name or search URL, $1 per 1,000. Billed to your own Apify account: ~$0.001 per property (Apify free-plan price, lower on paid plans).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "searchUrls": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Search URLs — Enter Rightmove search result URLs. Example: https://www.rightmove.co.uk/property-for-sale/find.html?searchType=SALE&locationIdentifier=POSTCODE%5E123456 Example: [].",
+            "minItems": 1
+          },
+          "urls": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "URLs (alias) — Alias for searchUrls - use either searchUrls or urls Example: [].",
+            "minItems": 1
+          },
+          "location": {
+            "type": "string",
+            "description": "Location — Town, city, postcode area or region, e.g. \"Manchester\" or \"Kensington, London\". Several: separate with ; (each becomes one search). Resolved through Rightmove's own place search. Example: \"\".",
+            "minLength": 1
+          },
+          "channel": {
+            "type": "string",
+            "enum": [
+              "buy",
+              "rent"
+            ],
+            "description": "Channel — Property type: buy or rent Example: \"buy\"."
+          },
+          "minPrice": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Min price — Minimum price in GBP. Used if no search URLs provided. Example: 0."
+          },
+          "maxPrice": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Max price — Maximum price in GBP. Used if no search URLs provided. Example: 9999999."
+          },
+          "minBedrooms": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Min bedrooms — Minimum number of bedrooms. Used if no search URLs provided. Example: 0."
+          },
+          "radius": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 50,
+            "description": "Search radius — Search radius in miles around the location: 0.25, 0.5, 1, 3, 5, 10, 15, 20, 30 or 40. Example: 1."
+          },
+          "maxProperties": {
+            "type": "integer",
+            "default": 50,
+            "minimum": 1,
+            "maximum": 1000,
+            "description": "Max properties — Maximum properties per search (each URL or location)."
+          }
+        },
+        "additionalProperties": false,
+        "anyOf": [
+          {
+            "required": [
+              "searchUrls"
+            ]
+          },
+          {
+            "required": [
+              "urls"
+            ]
+          },
+          {
+            "required": [
+              "location"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "wellfound_jobs_scraper",
+      "description": "Scrape startup jobs from Wellfound (AngelList Talent) by role and city or remote: title, salary and equity ranges, job type, location, posted date, description, and the company’s size, stage and tagline. No login. Billed to your own Apify account: ~$0.002 per job (Apify free-plan price, lower on paid plans).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "roles": {
+            "type": "string",
+            "description": "Roles — Job roles, several separated by `;` (e.g. `software engineer; product manager; data scientist`). Use Wellfound’s role names. Example: \"software engineer\".",
+            "minLength": 1
+          },
+          "locations": {
+            "type": "string",
+            "description": "Locations — Cities, several separated by `;` (e.g. `New York; San Francisco; London`). Every role is searched in every location. Leave empty for all locations. Example: \"New York\".",
+            "minLength": 1
+          },
+          "remoteOnly": {
+            "type": "boolean",
+            "default": false,
+            "description": "Remote jobs only — Search remote jobs for each role instead of the locations."
+          },
+          "includeDescription": {
+            "type": "boolean",
+            "default": true,
+            "description": "Include job description — Add the full job description text to each row."
+          },
+          "maxJobs": {
+            "type": "integer",
+            "default": 50,
+            "minimum": 1,
+            "maximum": 5000,
+            "description": "Max jobs per search — For each role × location."
+          }
+        },
+        "additionalProperties": false,
+        "anyOf": [
+          {
+            "required": [
+              "roles"
+            ]
+          },
+          {
+            "required": [
+              "locations"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "stepstone_scraper",
+      "description": "Scrape StepStone job listings in Germany, Austria and Belgium by keyword, location and radius, or by search URL: job title, company, logo, location, date posted, labels, skills, description snippet, quick-apply and sponsored flags. Billed to your own Apify account: ~$0.001 per job (Apify free-plan price, lower on paid plans).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "keywords": {
+            "type": "string",
+            "description": "Keywords — Job title, skill or company, several separated by `;` (e.g. `python; data analyst; Pflegefachkraft`). Example: \"python\".",
+            "minLength": 1
+          },
+          "location": {
+            "type": "string",
+            "description": "Location — Optional city or region, e.g. `Berlin`, `München`, `Wien`."
+          },
+          "radius": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 200,
+            "description": "Radius (km) — Distance around the location."
+          },
+          "country": {
+            "type": "string",
+            "enum": [
+              "de",
+              "at",
+              "be"
+            ],
+            "default": "de",
+            "description": "StepStone site — Which StepStone site to search. Options: de = Germany (stepstone.de); at = Austria (stepstone.at); be = Belgium (stepstone.be)."
+          },
+          "sortBy": {
+            "type": "string",
+            "enum": [
+              "relevance",
+              "date"
+            ],
+            "default": "relevance",
+            "description": "Sort by — Relevance (StepStone default) or newest first. Options: relevance = Relevance; date = Newest first."
+          },
+          "searchUrls": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "StepStone search URLs — Optional: search URLs copied from stepstone.de/.at/.be with your filters (salary, experience, contract type, home office). They are paged as they are.",
+            "minItems": 1
+          },
+          "maxJobs": {
+            "type": "integer",
+            "default": 100,
+            "minimum": 1,
+            "maximum": 2000,
+            "description": "Max jobs per search — For each keyword or URL (25 jobs per page)."
+          }
+        },
+        "additionalProperties": false,
+        "anyOf": [
+          {
+            "required": [
+              "keywords"
+            ]
+          },
+          {
+            "required": [
+              "searchUrls"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "naukri_jobs_scraper",
+      "description": "Scrape Naukri.com job listings by keyword and city or from any search URL: title, company, salary range, experience, skills, work mode, posting date and AmbitionBox company rating. Real browser, no login, pay per job. Billed to your own Apify account: ~$0.0008 per job (Apify free-plan price, lower on paid plans).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "keywords": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Keywords — Job titles, skills or companies to search for, one per line, e.g. python developer. Each keyword is searched in every location below. Example: [\"python developer\"].",
+            "minItems": 1
+          },
+          "locations": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Locations — Optional. Cities or regions, one per line, e.g. bengaluru, pune, delhi ncr. Leave empty to search all of India. Example: [\"bengaluru\"]."
+          },
+          "startUrls": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Naukri search URLs — Optional. Paste search result URLs from naukri.com, e.g. https://www.naukri.com/java-jobs-in-pune. Pagination is handled for you.",
+            "minItems": 1
+          },
+          "maxJobsPerSearch": {
+            "type": "integer",
+            "default": 100,
+            "minimum": 1,
+            "maximum": 5000,
+            "description": "Max jobs per search — Stop after this many jobs for each keyword-location pair or URL, e.g. 100. Each job is one billed result. Naukri shows 20 jobs per page."
+          },
+          "experience": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 30,
+            "description": "Experience (years) — Optional. Only jobs that accept this many years of experience, e.g. 3."
+          },
+          "jobAge": {
+            "type": "string",
+            "enum": [
+              "1",
+              "3",
+              "7",
+              "15",
+              "30"
+            ],
+            "description": "Posted within — Optional. Only jobs posted within the last N days. Options: 1 = Last 24 hours; 3 = Last 3 days; 7 = Last 7 days; 15 = Last 15 days; 30 = Last 30 days."
+          },
+          "debug": {
+            "type": "boolean",
+            "default": false,
+            "description": "Save raw API responses — Store each page's raw search API response in the key-value store, for troubleshooting."
+          }
+        },
+        "additionalProperties": false,
+        "anyOf": [
+          {
+            "required": [
+              "keywords"
+            ]
+          },
+          {
+            "required": [
+              "startUrls"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "zillow_scraper",
+      "description": "Scrape Zillow search results for any city, ZIP or map search: price, address, coordinates, beds, baths, square feet, lot size, home type, days on Zillow, Zestimate and rent Zestimate, tax value, broker, photos, rental building units, sold dates. Billed to your own Apify account: ~$0.001 per home (Apify free-plan price, lower on paid plans).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "locations": {
+            "type": "string",
+            "description": "Locations — City, ZIP code, neighborhood or county, several separated by `;` (e.g. `Austin, TX; 90210; Brooklyn, NY`). Example: \"Austin, TX\".",
+            "minLength": 1
+          },
+          "listingType": {
+            "type": "string",
+            "enum": [
+              "sale",
+              "rent",
+              "sold"
+            ],
+            "default": "sale",
+            "description": "Listing type — For locations: homes for sale, for rent, or recently sold. Options: sale = For sale; rent = For rent; sold = Recently sold."
+          },
+          "searchUrls": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Zillow search URLs — Optional: search URLs copied from zillow.com with your filters (price, beds, home type, map area). They are paged as they are.",
+            "minItems": 1
+          },
+          "sortBy": {
+            "type": "string",
+            "enum": [
+              "relevance",
+              "newest",
+              "price_low",
+              "price_high",
+              "beds",
+              "baths",
+              "size",
+              "lot"
+            ],
+            "default": "relevance",
+            "description": "Sort by — For locations: Zillow order of the results. Options: relevance = Homes for you; newest = Newest; price_low = Price (low to high); price_high = Price (high to low); beds = Bedrooms; baths = Bathrooms; size = Square feet; lot = Lot size."
+          },
+          "maxListings": {
+            "type": "integer",
+            "default": 100,
+            "minimum": 1,
+            "maximum": 1000,
+            "description": "Max listings per search — For each location or URL. Zillow shows at most about 820 homes (20 pages) per search; split big areas by ZIP code."
+          }
+        },
+        "additionalProperties": false,
+        "anyOf": [
+          {
+            "required": [
+              "locations"
+            ]
+          },
+          {
+            "required": [
+              "searchUrls"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "zillow_detail_scraper",
+      "description": "Get full Zillow property details by URL or zpid: description, year built, price per sq ft, HOA fee, tax rate, parking, all photos, price history, Zestimate and rent Zestimate, page views and saves, days on Zillow, MLS id, listing agent and brokerage. Billed to your own Apify account: ~$0.003 per home (Apify free-plan price, lower on paid plans).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "homes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Homes — Zillow home URLs (`https://www.zillow.com/homedetails/…_zpid/`) or zpids (`29412534`). Example: [\"https://www.zillow.com/homedetails/500-Denson-Dr-Austin-TX-78752/29412534_zpid/\"].",
+            "minItems": 1
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "homes"
+        ]
+      }
+    }
+  ]
+}
