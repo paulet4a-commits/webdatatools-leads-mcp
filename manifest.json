@@ -4,7 +4,7 @@
   "display_name": "WebDataTools Leads, jobs & company data",
   "version": "0.1.0",
   "description": "Leads, jobs & company data tools for AI agents over MCP, backed by WebDataTools' Apify Actors. Uses your own Apify API token — billed to you, not us.",
-  "long_description": "35 leads, jobs & company data tools. Company profiles from a domain, hiring signals from ATS boards, Y Combinator companies, Wikidata enrichment, e-mail validation, OpenStreetMap places, market quotes and remote jobs.\n\nEvery tool call runs a WebDataTools Actor on your own Apify account (get a free token with monthly free credit at https://console.apify.com/settings/integrations), so usage is billed to you, never to the server author. The price per result is in each tool description.",
+  "long_description": "38 leads, jobs & company data tools. Company profiles from a domain, hiring signals from ATS boards, Y Combinator companies, Wikidata enrichment, e-mail validation, OpenStreetMap places, market quotes and remote jobs.\n\nEvery tool call runs a WebDataTools Actor on your own Apify account (get a free token with monthly free credit at https://console.apify.com/settings/integrations), so usage is billed to you, never to the server author. The price per result is in each tool description.",
   "author": {
     "name": "WebDataTools",
     "url": "https://apify.com/webdatatools"
@@ -1921,6 +1921,57 @@
       }
     },
     {
+      "name": "infojobs_scraper",
+      "description": "Scrape InfoJobs.net, Spain’s leading job board, by keyword or search URL: job title, company, city, contract type, workday, remote/on-site, salary range, publish date and the full job description. Billed to your own Apify account: ~$0.001 per job (Apify free-plan price, lower on paid plans).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "keywords": {
+            "type": "string",
+            "description": "Keywords — Job title, skill or company, several separated by `;` (e.g. `desarrollador; enfermera; data analyst`). Searches all of Spain. Example: \"desarrollador\".",
+            "minLength": 1
+          },
+          "searchUrls": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "InfoJobs search URLs — Optional: search URLs copied from infojobs.net with your filters (province, category, salary, teleworking, contract type). The Actor pages through them as they are.",
+            "minItems": 1
+          },
+          "sortBy": {
+            "type": "string",
+            "enum": [
+              "relevance",
+              "date"
+            ],
+            "default": "relevance",
+            "description": "Sort by — Relevance (InfoJobs default) or newest first. Options: relevance = Relevance; date = Newest first."
+          },
+          "maxJobs": {
+            "type": "integer",
+            "default": 50,
+            "minimum": 1,
+            "maximum": 2000,
+            "description": "Max jobs per search — For each keyword or URL (about 20 jobs per page)."
+          }
+        },
+        "additionalProperties": false,
+        "anyOf": [
+          {
+            "required": [
+              "keywords"
+            ]
+          },
+          {
+            "required": [
+              "searchUrls"
+            ]
+          }
+        ]
+      }
+    },
+    {
       "name": "stepstone_scraper",
       "description": "Scrape StepStone job listings in Germany, Austria and Belgium by keyword, location and radius, or by search URL: job title, company, logo, location, date posted, labels, skills, description snippet, quick-apply and sponsored flags. Billed to your own Apify account: ~$0.001 per job (Apify free-plan price, lower on paid plans).",
       "inputSchema": {
@@ -2150,6 +2201,76 @@
         "additionalProperties": false,
         "required": [
           "homes"
+        ]
+      }
+    },
+    {
+      "name": "redfin_scraper",
+      "description": "Scrape Redfin homes for sale from any search URL or ZIP code, filters included: price, beds, baths, sq ft, price per sq ft, lot, year built, HOA, days on market, address, coordinates, broker and remarks. Billed to your own Apify account: ~$0.001 per home (Apify free-plan price, lower on paid plans).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "searchUrls": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Redfin search URLs or ZIP codes — Redfin search pages copied from your browser — a city, ZIP, county or neighborhood, with any filters (price, beds, home type…), e.g. `https://www.redfin.com/city/30749/NY/New-York/filter/min-price=500k` — or plain 5-digit ZIP codes like `78701`. Example: [\"https://www.redfin.com/city/30818/TX/Austin\",\"78701\"].",
+            "minItems": 1
+          },
+          "maxHomes": {
+            "type": "integer",
+            "default": 100,
+            "minimum": 1,
+            "maximum": 350,
+            "description": "Max homes per search — For each URL or ZIP code. Redfin returns at most 350 homes per search."
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "searchUrls"
+        ]
+      }
+    },
+    {
+      "name": "kleinanzeigen_scraper",
+      "description": "Scrape Kleinanzeigen.de (formerly eBay Kleinanzeigen) ads by keyword or search URL: title, price, negotiable/free flag, description, ZIP code, city, date, shipping, commercial seller and photos. Billed to your own Apify account: ~$0.001 per ad (Apify free-plan price, lower on paid plans).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "keywords": {
+            "type": "string",
+            "description": "Search keywords — What to search for, several separated by `;` (e.g. `fahrrad; iphone 15; sofa`). Searches all of Germany. Example: \"e-bike\".",
+            "minLength": 1
+          },
+          "searchUrls": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Kleinanzeigen search URLs — Optional: search URLs copied from kleinanzeigen.de with your filters (category, city and radius, price, private/commercial). The Actor follows their pages as they are.",
+            "minItems": 1
+          },
+          "maxAds": {
+            "type": "integer",
+            "default": 50,
+            "minimum": 1,
+            "maximum": 5000,
+            "description": "Max ads per search — For each keyword or URL (about 25 ads per page)."
+          }
+        },
+        "additionalProperties": false,
+        "anyOf": [
+          {
+            "required": [
+              "keywords"
+            ]
+          },
+          {
+            "required": [
+              "searchUrls"
+            ]
+          }
         ]
       }
     }
