@@ -2990,5 +2990,49 @@
     ],
     "urlSourceFields": [],
     "price": "$0.0035 / company"
+  },
+  {
+    "name": "naukrigulf_jobs_scraper",
+    "actor": "webdatatools~naukrigulf-jobs-scraper",
+    "title": "NaukriGulf Jobs Scraper (Gulf Job Listings)",
+    "description": "Scrape NaukriGulf job listings for the Gulf region by keyword and location: title, company, location, experience range, posting date, summary, skills and apply link. Pay per job. Billed to your own Apify account: ~$0.001 per job (Apify free-plan price, lower on paid plans).",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "keywords": {
+          "type": "string",
+          "description": "Keywords — Job title, skill or company words, e.g. `software developer` or `odoo`. Leave empty to read the newest jobs across all categories. Example: \"developer\".",
+          "minLength": 1
+        },
+        "location": {
+          "type": "string",
+          "description": "Location — City or country name as NaukriGulf spells it, e.g. `Dubai`, `Riyadh`, `Doha`, `Saudi Arabia`. Leave empty for all Gulf locations. Example: \"Dubai\".",
+          "minLength": 1
+        },
+        "maxJobs": {
+          "type": "integer",
+          "default": 50,
+          "minimum": 1,
+          "maximum": 2000,
+          "description": "Max jobs — Upper limit for the whole run, e.g. `100`. The site reports the total match count; the run stops at this number."
+        }
+      },
+      "additionalProperties": false,
+      "anyOf": [
+        {
+          "required": [
+            "keywords"
+          ]
+        },
+        {
+          "required": [
+            "location"
+          ]
+        }
+      ]
+    },
+    "arrayFields": [],
+    "urlSourceFields": [],
+    "price": "$0.001 / job"
   }
 ]
