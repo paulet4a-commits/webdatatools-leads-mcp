@@ -2495,11 +2495,13 @@
       "properties": {
         "startUrls": {
           "type": "string",
-          "description": "Google Maps links — Optional Google Maps links, one per item, e.g. [\"https://www.google.com/maps/search/dentist+in+Austin+TX/\"]. A search link runs its text and returns up to \"Max places per search term\"; a place link returns that one place (matched by its ID). Can be used alone: leave \"Search terms\" and \"Location\" empty."
+          "description": "Google Maps links — Optional Google Maps links, one per item, e.g. [\"https://www.google.com/maps/search/dentist+in+Austin+TX/\"]. A search link runs its text and returns up to \"Max places per search term\"; a place link returns that one place (matched by its ID). Can be used alone: leave \"Search terms\" and \"Location\" empty.",
+          "minLength": 1
         },
         "locations": {
           "type": "string",
-          "description": "Locations (list) — Several places to search, e.g. [\"78701\", \"78704\", \"Kadıköy, İstanbul\"]. Every search term runs in every location, and each place is returned once. Use it to go past the ~120 places one search returns. When filled, it is used instead of \"Location\"."
+          "description": "Locations (list) — Several places to search, e.g. [\"78701\", \"78704\", \"Kadıköy, İstanbul\"]. Every search term runs in every location, and each place is returned once. Use it to go past the ~120 places one search returns. When filled, it is used instead of \"Location\".",
+          "minLength": 1
         },
         "categoryFilter": {
           "type": "string",
@@ -2512,13 +2514,13 @@
         },
         "searchQueries": {
           "type": "string",
-          "default": "dentist",
-          "description": "Search terms — What to search on Google Maps. Enter one term as a string, e.g. \"dentist\", several separated by semicolons, e.g. \"dentist; orthodontist\", or a JSON array, e.g. [\"dentist\", \"orthodontist\"]. Aliases: searchStringsArray, query, keyword."
+          "description": "Search terms — What to search on Google Maps. Enter one term as a string, e.g. \"dentist\", several separated by semicolons, e.g. \"dentist; orthodontist\", or a JSON array, e.g. [\"dentist\", \"orthodontist\"]. Aliases: searchStringsArray, query, keyword. Example: \"dentist\".",
+          "minLength": 1
         },
         "location": {
           "type": "string",
-          "default": "Austin, TX",
-          "description": "Location — City, region or country to search in, e.g. \"Austin, TX\" or \"Kadıköy, İstanbul\". Leave empty if your search terms already contain the place, e.g. \"plumber in Chicago\". Alias: locationQuery."
+          "description": "Location — City, region or country to search in, e.g. \"Austin, TX\" or \"Kadıköy, İstanbul\". Leave empty if your search terms already contain the place, e.g. \"plumber in Chicago\". Alias: locationQuery. Example: \"Austin, TX\".",
+          "minLength": 1
         },
         "maxPlacesPerSearch": {
           "type": "integer",
@@ -2578,7 +2580,25 @@
           "description": "Minimum rating — Only return places rated at least this many stars (0-5), e.g. 4. 0 returns every place."
         }
       },
-      "additionalProperties": false
+      "additionalProperties": false,
+      "anyOf": [
+        {
+          "required": [
+            "startUrls"
+          ]
+        },
+        {
+          "required": [
+            "locations"
+          ]
+        },
+        {
+          "required": [
+            "searchQueries",
+            "location"
+          ]
+        }
+      ]
     },
     "arrayFields": [],
     "urlSourceFields": [],
@@ -2594,13 +2614,13 @@
       "properties": {
         "searchTerms": {
           "type": "string",
-          "default": "plumber",
-          "description": "What (keywords) — The business type or keyword, e.g. \"plumber\", \"dentist\" or \"coffee shop\"."
+          "description": "What (keywords) — The business type or keyword, e.g. \"plumber\", \"dentist\" or \"coffee shop\". Example: \"plumber\".",
+          "minLength": 1
         },
         "location": {
           "type": "string",
-          "default": "Austin, TX",
-          "description": "Where (city, state or ZIP) — The place to search, e.g. \"Austin, TX\" or \"10001\". YellowPages uses it as the geographic term."
+          "description": "Where (city, state or ZIP) — The place to search, e.g. \"Austin, TX\" or \"10001\". YellowPages uses it as the geographic term. Example: \"Austin, TX\".",
+          "minLength": 1
         },
         "maxItems": {
           "type": "integer",
@@ -2610,7 +2630,11 @@
           "description": "Max businesses — Most business listings to return, e.g. 60. YellowPages shows about 30 per page; the Actor pages through."
         }
       },
-      "additionalProperties": false
+      "additionalProperties": false,
+      "required": [
+        "searchTerms",
+        "location"
+      ]
     },
     "arrayFields": [],
     "urlSourceFields": [],
@@ -2626,8 +2650,8 @@
       "properties": {
         "keywords": {
           "type": "string",
-          "default": "Softwareentwickler",
-          "description": "Keywords — Job title, skill or employer, e.g. `Softwareentwickler` or `Pflegefachkraft`. Several separated by `;` run one after another."
+          "description": "Keywords — Job title, skill or employer, e.g. `Softwareentwickler` or `Pflegefachkraft`. Several separated by `;` run one after another. Example: \"Softwareentwickler\".",
+          "minLength": 1
         },
         "location": {
           "type": "string",
@@ -2672,7 +2696,10 @@
           "description": "Include job description — Also calls the job detail endpoint for each job to add the full description. Slower and uses more requests."
         }
       },
-      "additionalProperties": false
+      "additionalProperties": false,
+      "required": [
+        "keywords"
+      ]
     },
     "arrayFields": [],
     "urlSourceFields": [],
@@ -2688,7 +2715,8 @@
       "properties": {
         "keywords": {
           "type": "string",
-          "description": "Keywords — Search words for job title, skill or company, e.g. `python developer`. Leave empty to read the public browse feed (newest jobs first). Example: \"python developer\"."
+          "description": "Keywords — Search words for job title, skill or company, e.g. `python developer`. Leave empty to read the public browse feed (newest jobs first). Example: \"python developer\".",
+          "minLength": 1
         },
         "country": {
           "type": "string",
@@ -2726,7 +2754,10 @@
           "description": "Include full description — Adds the HTML description converted to plain text. Off by default to keep rows short."
         }
       },
-      "additionalProperties": false
+      "additionalProperties": false,
+      "required": [
+        "keywords"
+      ]
     },
     "arrayFields": [],
     "urlSourceFields": [],
@@ -2742,8 +2773,8 @@
       "properties": {
         "keywords": {
           "type": "string",
-          "default": "developer",
-          "description": "Keywords — Job title, skill or company, e.g. `developer` or `data analyst`. Several separated by `;` run one after another."
+          "description": "Keywords — Job title, skill or company, e.g. `developer` or `data analyst`. Several separated by `;` run one after another. Example: \"developer\".",
+          "minLength": 1
         },
         "location": {
           "type": "string",
@@ -2795,7 +2826,10 @@
           "description": "Include full description — Opens each job page and adds the full description as plain text. Slower: one extra request per job."
         }
       },
-      "additionalProperties": false
+      "additionalProperties": false,
+      "required": [
+        "keywords"
+      ]
     },
     "arrayFields": [],
     "urlSourceFields": [],
@@ -2814,7 +2848,8 @@
           "items": {
             "type": "string"
           },
-          "description": "Job searches — Job searches, one per line (e.g. \"data analyst in Istanbul\"). Example: [\"data analyst in New York\"]."
+          "description": "Job searches — Job searches, one per line (e.g. \"data analyst in Istanbul\"). Example: [\"data analyst in New York\"].",
+          "minItems": 1
         },
         "maxResultsPerQuery": {
           "type": "integer",
@@ -2834,7 +2869,10 @@
           "description": "Language (hl) — Two-letter language code."
         }
       },
-      "additionalProperties": false
+      "additionalProperties": false,
+      "required": [
+        "queries"
+      ]
     },
     "arrayFields": [
       "queries"
@@ -2852,8 +2890,8 @@
       "properties": {
         "keywords": {
           "type": "string",
-          "default": "developer",
-          "description": "Keywords — Job title, skill or company, e.g. `developer` or `data analyst`. Several separated by `;` run one after another."
+          "description": "Keywords — Job title, skill or company, e.g. `developer` or `data analyst`. Several separated by `;` run one after another. Example: \"developer\".",
+          "minLength": 1
         },
         "location": {
           "type": "string",
@@ -2877,7 +2915,10 @@
           "description": "Max jobs per search — For each keyword (15 jobs per page, read until this limit or the end of the results)."
         }
       },
-      "additionalProperties": false
+      "additionalProperties": false,
+      "required": [
+        "keywords"
+      ]
     },
     "arrayFields": [],
     "urlSourceFields": [],
@@ -2893,8 +2934,8 @@
       "properties": {
         "keywords": {
           "type": "string",
-          "default": "developer",
-          "description": "Keywords — Job title, skill or company, e.g. `developer` or `data analyst`. Several separated by `;` run one after another."
+          "description": "Keywords — Job title, skill or company, e.g. `developer` or `data analyst`. Several separated by `;` run one after another. Example: \"developer\".",
+          "minLength": 1
         },
         "location": {
           "type": "string",
@@ -2913,7 +2954,10 @@
           "description": "Save debug page — Stores the first results page HTML in the key-value store (DEBUG_PAGE) and stops. For maintainers."
         }
       },
-      "additionalProperties": false
+      "additionalProperties": false,
+      "required": [
+        "keywords"
+      ]
     },
     "arrayFields": [],
     "urlSourceFields": [],
@@ -2932,13 +2976,14 @@
           "items": {
             "type": "string"
           },
-          "default": [
-            "microsoft"
-          ],
-          "description": "Companies — LinkedIn company page URLs or slugs, e.g. `https://www.linkedin.com/company/microsoft` or `microsoft`. Public company pages only."
+          "description": "Companies — LinkedIn company page URLs or slugs, e.g. `https://www.linkedin.com/company/microsoft` or `microsoft`. Public company pages only. Example: [\"microsoft\"].",
+          "minItems": 1
         }
       },
-      "additionalProperties": false
+      "additionalProperties": false,
+      "required": [
+        "companies"
+      ]
     },
     "arrayFields": [
       "companies"
