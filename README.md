@@ -1,7 +1,7 @@
 # WebDataTools Leads, jobs & company data MCP server
 `webdatatools-leads-mcp`
 
-An MCP server with 38 leads, jobs & company data tools for AI agents — Claude Desktop, Cursor, Cline or any MCP client. Company profiles from a domain, hiring signals from ATS boards, Y Combinator companies, Wikidata enrichment, e-mail validation, OpenStreetMap places, market quotes and remote jobs.
+An MCP server with 47 leads, jobs & company data tools for AI agents — Claude Desktop, Cursor, Cline or any MCP client. Company profiles from a domain, hiring signals from ATS boards, Y Combinator companies, Wikidata enrichment, e-mail validation, OpenStreetMap places, market quotes and remote jobs.
 
 **This server uses *your own* Apify API token.** Every tool call runs a [WebDataTools](https://apify.com/webdatatools) Actor under your Apify account and is billed to your Apify credit — pay per result, the price is in each tool description. Your token is only sent to Apify's API.
 
@@ -36,7 +36,7 @@ Add this to `claude_desktop_config.json` (Claude Desktop) or `.cursor/mcp.json` 
 }
 ```
 
-## Tools (38)
+## Tools (47)
 
 | Tool | What it does | Price (free plan) | Backing Actor |
 |---|---|---|---|
@@ -78,6 +78,15 @@ Add this to `claude_desktop_config.json` (Claude Desktop) or `.cursor/mcp.json` 
 | `zillow_detail_scraper` | Zillow Home Details Scraper (Description, Photos, History) | $0.003 / home | [Actor](https://apify.com/webdatatools/zillow-detail-scraper) |
 | `redfin_scraper` | Redfin Scraper (Homes for Sale, Prices, Details) | $0.001 / home | [Actor](https://apify.com/webdatatools/redfin-scraper) |
 | `kleinanzeigen_scraper` | Kleinanzeigen Scraper (Ads, Prices, Locations) | $0.001 / ad | [Actor](https://apify.com/webdatatools/kleinanzeigen-scraper) |
+| `google_maps_email_extractor` | Google Maps Email Extractor: Only Places With E-mail | $0.002 / Place | [Actor](https://apify.com/webdatatools/google-maps-email-extractor) |
+| `yellowpages_scraper` | YellowPages Business Scraper (USA Listings) | $0.001 / business | [Actor](https://apify.com/webdatatools/yellowpages-scraper) |
+| `arbeitsagentur_jobs_scraper` | Arbeitsagentur Jobs Scraper (Germany Job Listings) | $0.002 / job | [Actor](https://apify.com/webdatatools/arbeitsagentur-jobs-scraper) |
+| `himalayas_jobs_scraper` | Himalayas Jobs Scraper (Remote Jobs with Filters) | $0.0008 / job | [Actor](https://apify.com/webdatatools/himalayas-jobs-scraper) |
+| `reed_jobs_scraper` | Reed Jobs Scraper (UK Jobs, Salaries, Locations) | $0.0004 / job | [Actor](https://apify.com/webdatatools/reed-jobs-scraper) |
+| `google_jobs_scraper` | Google Jobs Scraper (Job Listings, Companies, Sources) | $0.004 / job | [Actor](https://apify.com/webdatatools/google-jobs-scraper) |
+| `foundit_jobs_scraper` | Foundit Jobs Scraper (India Jobs, Salaries, Skills) | $0.0035 / job | [Actor](https://apify.com/webdatatools/foundit-jobs-scraper) |
+| `totaljobs_scraper` | Totaljobs Scraper (UK Jobs, Salaries, Locations) | $0.0012 / job | [Actor](https://apify.com/webdatatools/totaljobs-scraper) |
+| `linkedin_company_scraper` | LinkedIn Company Scraper (Public Company Pages) | $0.0035 / company | [Actor](https://apify.com/webdatatools/linkedin-company-scraper) |
 
 ## More WebDataTools MCP servers
 

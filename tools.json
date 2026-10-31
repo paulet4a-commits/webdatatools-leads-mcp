@@ -391,7 +391,7 @@
     "name": "company_360",
     "actor": "webdatatools~company-360",
     "title": "Company 360: full company profile from a domain",
-    "description": "Company 360 turns a domain into one rich profile row: contacts, tech stack, DNS/e-mail security, TLS/security headers, on-page SEO, hiring signals and company facts (HQ, employees, revenue, founders) merged from our own scraper suite. Billed to your own Apify account: ~$0.05 per company (Apify free-plan price, lower on paid plans).",
+    "description": "Build company profiles from domains: contacts, tech stack, DNS/security, SEO, hiring and company facts. Only profiles meeting your section-completeness threshold enter results; rejected profiles remain available as diagnostics. Billed to your own Apify account: ~$0.05 per company (Apify free-plan price, lower on paid plans).",
     "inputSchema": {
       "type": "object",
       "properties": {
@@ -400,7 +400,7 @@
           "items": {
             "type": "string"
           },
-          "description": "Domains — Enter the company domains to profile, one row is returned per domain, e.g. apify.com. Full URLs and www. prefixes are accepted and stripped automatically, so you can paste a list straight out of your CRM. Example: [\"apify.com\"].",
+          "description": "Domains — Company domains to profile, e.g. apify.com. Only profiles meeting Minimum profile completeness enter the results dataset; other profiles remain available as diagnostics. Example: [\"apify.com\"].",
           "minItems": 1
         },
         "includeContacts": {
@@ -437,6 +437,13 @@
           "type": "boolean",
           "default": true,
           "description": "Include SEO audit — Audit the homepage's on-page SEO: a 0-100 score plus the list of issues found."
+        },
+        "minimumProfileCompleteness": {
+          "type": "integer",
+          "default": 100,
+          "minimum": 0,
+          "maximum": 100,
+          "description": "Minimum profile completeness — Only profiles at or above this percentage enter the charged results dataset. 100 (default) requires usable data from every enabled section; it does not guarantee every field is populated. Lower this only if you want to accept and pay for partial profiles. Failed/zero-completeness profiles always go to diagnostics."
         }
       },
       "additionalProperties": false,
@@ -588,7 +595,7 @@
     "name": "wikidata_entity_enrichment",
     "actor": "webdatatools~wikidata-entity-enrichment",
     "title": "Wikidata Entity & Company Enrichment (facts, IDs, links)",
-    "description": "Wikidata Entity & Company Enrichment resolves a QID, company name, or Wikipedia URL to its Wikidata item and returns facts (country, HQ, founders, CEO, employees, revenue), identifiers (ISIN, Crunchbase, LinkedIn) and social/media links — one row per entity. Billed to your own Apify account: ~$0.001 per result (Apify free-plan price, lower on paid plans).",
+    "description": "Resolve Wikidata QIDs, names and Wikipedia URLs into useful entity facts and links. Valid entities enter results; failed lookups stay in Diagnostics. Batch and Standby HTTP API, with result-budget checks and requested-language labels. Billed to your own Apify account: ~$0.001 per result (Apify free-plan price, lower on paid plans).",
     "inputSchema": {
       "type": "object",
       "properties": {
@@ -597,7 +604,7 @@
           "items": {
             "type": "string"
           },
-          "description": "Entities — Enter a Wikidata QID (e.g. Q95), an entity name to search for (e.g. Apify), or a Wikipedia article URL (e.g. https://en.wikipedia.org/wiki/Stripe,_Inc.) — one row is returned per entity. Names are resolved via Wikidata search, so the closest match wins. Example: [\"Q95\"].",
+          "description": "Entities — QID, entity name or Wikipedia URL. Only successfully enriched entities with useful data enter results. Failed or identity-only records remain in Diagnostics without a result event. An explicitly empty list is rejected. Example: [\"Q95\"].",
           "minItems": 1
         },
         "language": {
@@ -2477,5 +2484,466 @@
     ],
     "urlSourceFields": [],
     "price": "$0.001 / ad"
+  },
+  {
+    "name": "google_maps_email_extractor",
+    "actor": "webdatatools~google-maps-email-extractor",
+    "title": "Google Maps Email Extractor: Only Places With E-mail",
+    "description": "Google Maps places with the e-mail, phone and socials from each business website. $0.002 per place, plus $0.003 only when an e-mail is found (free plan). \"Only places with an e-mail\" charges only places that have one. Category, review and rating filters; many locations; Maps links. Billed to your own Apify account: ~$0.002 per Place (Apify free-plan price, lower on paid plans).",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "startUrls": {
+          "type": "string",
+          "description": "Google Maps links — Optional Google Maps links, one per item, e.g. [\"https://www.google.com/maps/search/dentist+in+Austin+TX/\"]. A search link runs its text and returns up to \"Max places per search term\"; a place link returns that one place (matched by its ID). Can be used alone: leave \"Search terms\" and \"Location\" empty."
+        },
+        "locations": {
+          "type": "string",
+          "description": "Locations (list) — Several places to search, e.g. [\"78701\", \"78704\", \"Kadıköy, İstanbul\"]. Every search term runs in every location, and each place is returned once. Use it to go past the ~120 places one search returns. When filled, it is used instead of \"Location\"."
+        },
+        "categoryFilter": {
+          "type": "string",
+          "description": "Category filter — Keep only places that have one of these Google categories, e.g. [\"Dentist\", \"Orthodontist\"]. Case-insensitive, exact category name. Places in other categories are not returned and not charged."
+        },
+        "minReviews": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Minimum reviews — Keep only places with at least this many Google reviews, e.g. 20. 0 = no filter. Places below it are not returned and not charged."
+        },
+        "searchQueries": {
+          "type": "string",
+          "default": "dentist",
+          "description": "Search terms — What to search on Google Maps. Enter one term as a string, e.g. \"dentist\", several separated by semicolons, e.g. \"dentist; orthodontist\", or a JSON array, e.g. [\"dentist\", \"orthodontist\"]. Aliases: searchStringsArray, query, keyword."
+        },
+        "location": {
+          "type": "string",
+          "default": "Austin, TX",
+          "description": "Location — City, region or country to search in, e.g. \"Austin, TX\" or \"Kadıköy, İstanbul\". Leave empty if your search terms already contain the place, e.g. \"plumber in Chicago\". Alias: locationQuery."
+        },
+        "maxPlacesPerSearch": {
+          "type": "integer",
+          "default": 10,
+          "minimum": 1,
+          "maximum": 120,
+          "description": "Max places per search term — How many places to return for each search term, 1-120 (Google stops at about 120 per search), e.g. 50. You pay per place returned, see \"Only places with an e-mail\"."
+        },
+        "splitArea": {
+          "type": "boolean",
+          "default": false,
+          "description": "Split the map area — Google gives about 120 places per search. With this on, the map area of each search term or location is split into up to 64 smaller cells, and each cell is searched, so a crowded city returns many more places (duplicates are removed). You pay per place returned, so set \"Max places per query\" and \"Maximum cost per run\"."
+        },
+        "maxPlacesPerQuery": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 1000,
+          "description": "Max places per query (with split area) — Total places for each search term or location when \"Split the map area\" is on, 1-1000, e.g. 400. Without the split it stays at \"Max places per search term\" (at most 120)."
+        },
+        "maxPagesPerSite": {
+          "type": "integer",
+          "default": 5,
+          "minimum": 1,
+          "maximum": 20,
+          "description": "Max pages per website — How many pages of each business website to open while looking for e-mails, e.g. 5. The homepage is opened first, then contact, impressum, about and team pages. Most sites need 2-3."
+        },
+        "enrichContacts": {
+          "type": "boolean",
+          "default": true,
+          "description": "Find e-mails and socials on websites — Visit each place's website and extract e-mails, phones and social profiles. Turn off to get only the Google Maps data."
+        },
+        "onlyWithEmail": {
+          "type": "boolean",
+          "default": false,
+          "description": "Only places with an e-mail — Return only places where an e-mail was found on the website. Places without an e-mail are still searched and crawled, but they are left out of the results and you are not charged for them. Needs \"Find e-mails and socials on websites\" on."
+        },
+        "language": {
+          "type": "string",
+          "default": "en",
+          "description": "Language — Language of Google Maps results as a 2-letter code, e.g. \"en\", \"de\", \"tr\"."
+        },
+        "country": {
+          "type": "string",
+          "default": "us",
+          "description": "Country — Country of Google Maps results as a 2-letter code, e.g. \"us\", \"gb\", \"de\"."
+        },
+        "skipClosedPlaces": {
+          "type": "boolean",
+          "default": false,
+          "description": "Skip closed places — Leave out places Google marks as permanently or temporarily closed."
+        },
+        "minRating": {
+          "type": "number",
+          "default": 0,
+          "minimum": 0,
+          "maximum": 5,
+          "description": "Minimum rating — Only return places rated at least this many stars (0-5), e.g. 4. 0 returns every place."
+        }
+      },
+      "additionalProperties": false
+    },
+    "arrayFields": [],
+    "urlSourceFields": [],
+    "price": "$0.002 / Place"
+  },
+  {
+    "name": "yellowpages_scraper",
+    "actor": "webdatatools~yellowpages-scraper",
+    "title": "YellowPages Business Scraper (USA Listings)",
+    "description": "Scrape YellowPages.com business search results for any keyword and place: business name, categories, business phone, address, website, star rating, review count, years in business and profile link. Real Chromium, no login, pay per business. Billed to your own Apify account: ~$0.001 per business (Apify free-plan price, lower on paid plans).",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "searchTerms": {
+          "type": "string",
+          "default": "plumber",
+          "description": "What (keywords) — The business type or keyword, e.g. \"plumber\", \"dentist\" or \"coffee shop\"."
+        },
+        "location": {
+          "type": "string",
+          "default": "Austin, TX",
+          "description": "Where (city, state or ZIP) — The place to search, e.g. \"Austin, TX\" or \"10001\". YellowPages uses it as the geographic term."
+        },
+        "maxItems": {
+          "type": "integer",
+          "default": 30,
+          "minimum": 1,
+          "maximum": 500,
+          "description": "Max businesses — Most business listings to return, e.g. 60. YellowPages shows about 30 per page; the Actor pages through."
+        }
+      },
+      "additionalProperties": false
+    },
+    "arrayFields": [],
+    "urlSourceFields": [],
+    "price": "$0.001 / business"
+  },
+  {
+    "name": "arbeitsagentur_jobs_scraper",
+    "actor": "webdatatools~arbeitsagentur-jobs-scraper",
+    "title": "Arbeitsagentur Jobs Scraper (Germany Job Listings)",
+    "description": "Scrape German job listings from the Bundesagentur fuer Arbeit Jobsuche by keyword, place, radius, working time and publication date: title, employer, location, publication and start dates, reference number and link. Billed to your own Apify account: ~$0.002 per job (Apify free-plan price, lower on paid plans).",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "keywords": {
+          "type": "string",
+          "default": "Softwareentwickler",
+          "description": "Keywords — Job title, skill or employer, e.g. `Softwareentwickler` or `Pflegefachkraft`. Several separated by `;` run one after another."
+        },
+        "location": {
+          "type": "string",
+          "description": "Location — Optional German place or postcode, e.g. `Berlin` or `80331`. Leave empty for all of Germany. Example: \"Berlin\"."
+        },
+        "radius": {
+          "type": "integer",
+          "default": 25,
+          "minimum": 0,
+          "maximum": 200,
+          "description": "Radius (km) — Search radius around the location, 0 to 200 km. Used only with a location."
+        },
+        "employmentType": {
+          "type": "string",
+          "enum": [
+            "all",
+            "vz",
+            "tz",
+            "mj",
+            "snw"
+          ],
+          "default": "all",
+          "description": "Working time — Full-time, part-time, mini-job or shift/night/weekend work. Leave on \"All\" for every type. Options: all = All; vz = Full-time; tz = Part-time; mj = Mini-job; snw = Shift, night or weekend."
+        },
+        "publishedWithinDays": {
+          "type": "integer",
+          "default": 0,
+          "minimum": 0,
+          "maximum": 100,
+          "description": "Published within (days) — Only jobs published in the last N days, 0 to 100. 0 means no date filter."
+        },
+        "maxJobs": {
+          "type": "integer",
+          "default": 100,
+          "minimum": 1,
+          "maximum": 1000,
+          "description": "Max jobs per search — For each keyword, read until this limit or the end of the results."
+        },
+        "includeDetails": {
+          "type": "boolean",
+          "default": false,
+          "description": "Include job description — Also calls the job detail endpoint for each job to add the full description. Slower and uses more requests."
+        }
+      },
+      "additionalProperties": false
+    },
+    "arrayFields": [],
+    "urlSourceFields": [],
+    "price": "$0.002 / job"
+  },
+  {
+    "name": "himalayas_jobs_scraper",
+    "actor": "webdatatools~himalayas-jobs-scraper",
+    "title": "Himalayas Jobs Scraper (Remote Jobs with Filters)",
+    "description": "Scrape Himalayas remote job listings by keyword and country, with employment type, seniority, salary and posting-date filters: title, company, pay, location limits, categories and apply link. Billed to your own Apify account: ~$0.0008 per job (Apify free-plan price, lower on paid plans).",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "keywords": {
+          "type": "string",
+          "description": "Keywords — Search words for job title, skill or company, e.g. `python developer`. Leave empty to read the public browse feed (newest jobs first). Example: \"python developer\"."
+        },
+        "country": {
+          "type": "string",
+          "description": "Country restriction — Only jobs open to people in this country, e.g. `Germany`, `United States`, `Canada`. Uses the API country filter."
+        },
+        "employmentType": {
+          "type": "string",
+          "description": "Employment type — Applied after the fetch. Exact label as the API shows it, e.g. `Full Time`, `Part Time`, `Contractor`, `Intern`."
+        },
+        "seniority": {
+          "type": "string",
+          "description": "Seniority — Applied after the fetch. One label, e.g. `Entry-level`, `Mid-level`, `Senior`, `Manager`, `Director`."
+        },
+        "minSalary": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Minimum salary — Keeps jobs whose maximum published salary is at least this number (same currency and period as listed). Jobs without salary data are dropped when this is set."
+        },
+        "postedWithinDays": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 3650,
+          "description": "Posted within days — Keep only jobs published in the last N days, e.g. `7`."
+        },
+        "maxJobs": {
+          "type": "integer",
+          "default": 100,
+          "minimum": 1,
+          "maximum": 5000,
+          "description": "Max jobs — Upper limit for the whole run (20 jobs per API page; a single query returns at most 5,000 jobs)."
+        },
+        "fetchDescriptions": {
+          "type": "boolean",
+          "default": false,
+          "description": "Include full description — Adds the HTML description converted to plain text. Off by default to keep rows short."
+        }
+      },
+      "additionalProperties": false
+    },
+    "arrayFields": [],
+    "urlSourceFields": [],
+    "price": "$0.0008 / job"
+  },
+  {
+    "name": "reed_jobs_scraper",
+    "actor": "webdatatools~reed-jobs-scraper",
+    "title": "Reed Jobs Scraper (UK Jobs, Salaries, Locations)",
+    "description": "Scrape Reed.co.uk UK job listings by keyword, city and radius: job title, employer, location, salary range, working pattern, posting date, snippet and optional full description. Billed to your own Apify account: ~$0.0004 per job (Apify free-plan price, lower on paid plans).",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "keywords": {
+          "type": "string",
+          "default": "developer",
+          "description": "Keywords — Job title, skill or company, e.g. `developer` or `data analyst`. Several separated by `;` run one after another."
+        },
+        "location": {
+          "type": "string",
+          "description": "Location — Optional UK place, e.g. `London`, `Manchester`, `Leeds`. Leave empty for all of the UK."
+        },
+        "distance": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 100,
+          "description": "Distance (miles) — Radius around the location in miles, e.g. `10`. Only used with a location."
+        },
+        "workingOption": {
+          "type": "string",
+          "enum": [
+            "any",
+            "remote",
+            "hybrid",
+            "onsite"
+          ],
+          "default": "any",
+          "description": "Working pattern — Keep only remote, hybrid or onsite jobs. Applied after the fetch. Options: any = Any; remote = Remote; hybrid = Hybrid; onsite = On site."
+        },
+        "fullTimeOnly": {
+          "type": "boolean",
+          "default": false,
+          "description": "Full-time only — Keep only jobs marked full time."
+        },
+        "minSalary": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Minimum salary (GBP) — Keeps jobs whose top salary is at least this number. Jobs without salary data are dropped when this is set."
+        },
+        "postedWithinDays": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 3650,
+          "description": "Posted within days — Keep only jobs posted in the last N days, e.g. `7`."
+        },
+        "maxJobs": {
+          "type": "integer",
+          "default": 100,
+          "minimum": 1,
+          "maximum": 2000,
+          "description": "Max jobs per search — For each keyword (25 jobs per page; Reed pages are read until this limit or the end of the results)."
+        },
+        "fetchDescriptions": {
+          "type": "boolean",
+          "default": false,
+          "description": "Include full description — Opens each job page and adds the full description as plain text. Slower: one extra request per job."
+        }
+      },
+      "additionalProperties": false
+    },
+    "arrayFields": [],
+    "urlSourceFields": [],
+    "price": "$0.0004 / job"
+  },
+  {
+    "name": "google_jobs_scraper",
+    "actor": "webdatatools~google-jobs-scraper",
+    "title": "Google Jobs Scraper (Job Listings, Companies, Sources)",
+    "description": "Google Jobs Scraper returns Google Jobs listings for a search: title, company, location, posting date, description and source links. Uses the Apify GOOGLE_SERP proxy, no browser. Billed to your own Apify account: ~$0.004 per job (Apify free-plan price, lower on paid plans).",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "queries": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Job searches — Job searches, one per line (e.g. \"data analyst in Istanbul\"). Example: [\"data analyst in New York\"]."
+        },
+        "maxResultsPerQuery": {
+          "type": "integer",
+          "default": 20,
+          "minimum": 1,
+          "maximum": 100,
+          "description": "Max jobs per query — Rows per query."
+        },
+        "countryCode": {
+          "type": "string",
+          "default": "us",
+          "description": "Country (gl) — Two-letter country code."
+        },
+        "languageCode": {
+          "type": "string",
+          "default": "en",
+          "description": "Language (hl) — Two-letter language code."
+        }
+      },
+      "additionalProperties": false
+    },
+    "arrayFields": [
+      "queries"
+    ],
+    "urlSourceFields": [],
+    "price": "$0.004 / job"
+  },
+  {
+    "name": "foundit_jobs_scraper",
+    "actor": "webdatatools~foundit-jobs-scraper",
+    "title": "Foundit Jobs Scraper (India Jobs, Salaries, Skills)",
+    "description": "Scrape Foundit (formerly Monster India) job listings by keyword and city: job title, company, location, experience range, salary text, employment type, skills, posting date and link. India only. Billed to your own Apify account: ~$0.0035 per job (Apify free-plan price, lower on paid plans).",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "keywords": {
+          "type": "string",
+          "default": "developer",
+          "description": "Keywords — Job title, skill or company, e.g. `developer` or `data analyst`. Several separated by `;` run one after another."
+        },
+        "location": {
+          "type": "string",
+          "description": "City (India) — Optional Indian city, e.g. `Bangalore`, `Mumbai`, `Hyderabad`, `Delhi NCR`. Leave empty for all of India."
+        },
+        "employmentType": {
+          "type": "string",
+          "description": "Employment type — Keep only jobs with this type, e.g. `Full time`, `Part time`, `Contractual`, `Internship`. Applied after the fetch."
+        },
+        "postedWithinDays": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 3650,
+          "description": "Posted within days — Keep only jobs created in the last N days, e.g. `7`."
+        },
+        "maxJobs": {
+          "type": "integer",
+          "default": 100,
+          "minimum": 1,
+          "maximum": 2000,
+          "description": "Max jobs per search — For each keyword (15 jobs per page, read until this limit or the end of the results)."
+        }
+      },
+      "additionalProperties": false
+    },
+    "arrayFields": [],
+    "urlSourceFields": [],
+    "price": "$0.0035 / job"
+  },
+  {
+    "name": "totaljobs_scraper",
+    "actor": "webdatatools~totaljobs-scraper",
+    "title": "Totaljobs Scraper (UK Jobs, Salaries, Locations)",
+    "description": "Scrape Totaljobs UK job listings by keyword and location: job title, employer, location, salary text, work type, posting date, snippet and link. Billed to your own Apify account: ~$0.0012 per job (Apify free-plan price, lower on paid plans).",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "keywords": {
+          "type": "string",
+          "default": "developer",
+          "description": "Keywords — Job title, skill or company, e.g. `developer` or `data analyst`. Several separated by `;` run one after another."
+        },
+        "location": {
+          "type": "string",
+          "description": "Location — Optional UK place, e.g. `London`, `Manchester`. Leave empty for all of the UK."
+        },
+        "maxJobs": {
+          "type": "integer",
+          "default": 100,
+          "minimum": 1,
+          "maximum": 1000,
+          "description": "Max jobs per search — For each keyword, read until this limit or the end of the results."
+        },
+        "debugSave": {
+          "type": "boolean",
+          "default": false,
+          "description": "Save debug page — Stores the first results page HTML in the key-value store (DEBUG_PAGE) and stops. For maintainers."
+        }
+      },
+      "additionalProperties": false
+    },
+    "arrayFields": [],
+    "urlSourceFields": [],
+    "price": "$0.0012 / job"
+  },
+  {
+    "name": "linkedin_company_scraper",
+    "actor": "webdatatools~linkedin-company-scraper",
+    "title": "LinkedIn Company Scraper (Public Company Pages)",
+    "description": "Scrape public LinkedIn company pages without login: name, tagline, description, industry, company size, headquarters, founded year, website, specialties, follower count, logo and locations. Company pages only, no people profiles. Billed to your own Apify account: ~$0.0035 per company (Apify free-plan price, lower on paid plans).",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "companies": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [
+            "microsoft"
+          ],
+          "description": "Companies — LinkedIn company page URLs or slugs, e.g. `https://www.linkedin.com/company/microsoft` or `microsoft`. Public company pages only."
+        }
+      },
+      "additionalProperties": false
+    },
+    "arrayFields": [
+      "companies"
+    ],
+    "urlSourceFields": [],
+    "price": "$0.0035 / company"
   }
 ]
