@@ -4,7 +4,7 @@
   "display_name": "WebDataTools Leads, jobs & company data",
   "version": "0.1.0",
   "description": "Leads, jobs & company data tools for AI agents over MCP, backed by WebDataTools' Apify Actors. Uses your own Apify API token — billed to you, not us.",
-  "long_description": "48 leads, jobs & company data tools. Company profiles from a domain, hiring signals from ATS boards, Y Combinator companies, Wikidata enrichment, e-mail validation, OpenStreetMap places, market quotes and remote jobs.\n\nEvery tool call runs a WebDataTools Actor on your own Apify account (get a free token with monthly free credit at https://console.apify.com/settings/integrations), so usage is billed to you, never to the server author. The price per result is in each tool description.",
+  "long_description": "49 leads, jobs & company data tools. Company profiles from a domain, hiring signals from ATS boards, Y Combinator companies, Wikidata enrichment, e-mail validation, OpenStreetMap places, market quotes and remote jobs.\n\nEvery tool call runs a WebDataTools Actor on your own Apify account (get a free token with monthly free credit at https://console.apify.com/settings/integrations), so usage is billed to you, never to the server author. The price per result is in each tool description.",
   "author": {
     "name": "WebDataTools",
     "url": "https://apify.com/webdatatools"
@@ -2774,6 +2774,53 @@
               "location"
             ]
           }
+        ]
+      }
+    },
+    {
+      "name": "propertyfinder_scraper",
+      "description": "Scrape Property Finder UAE listings for rent or sale by location and price: price, bedrooms, bathrooms, size, location, agent, broker, listing date, link and photo, one row per listing. Billed to your own Apify account: ~$0.002 per listing (Apify free-plan price, lower on paid plans).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "purpose": {
+            "type": "string",
+            "enum": [
+              "rent",
+              "buy"
+            ],
+            "description": "Purpose — rent for rental listings, buy for sale listings. Options: rent = Rent; buy = Buy. Example: \"rent\".",
+            "minLength": 1
+          },
+          "locationId": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "Location id — Property Finder location id. 1 = Dubai, 2 = Umm Al Quwain. Other ids are the l= number in the site URL. Example: 1."
+          },
+          "minPrice": {
+            "type": "integer",
+            "default": 0,
+            "minimum": 0,
+            "description": "Min price (AED) — Optional. Lowest price in AED, e.g. 50000. Use 0 for no minimum."
+          },
+          "maxPrice": {
+            "type": "integer",
+            "default": 0,
+            "minimum": 0,
+            "description": "Max price (AED) — Optional. Highest price in AED, e.g. 150000. Use 0 for no maximum."
+          },
+          "maxResults": {
+            "type": "integer",
+            "default": 30,
+            "minimum": 1,
+            "maximum": 1000,
+            "description": "Max listings — How many listings to return, e.g. 100. Each search page has up to 30 listings."
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "purpose",
+          "locationId"
         ]
       }
     }

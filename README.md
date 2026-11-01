@@ -1,7 +1,7 @@
 # WebDataTools Leads, jobs & company data MCP server
 `webdatatools-leads-mcp`
 
-An MCP server with 48 leads, jobs & company data tools for AI agents — Claude Desktop, Cursor, Cline or any MCP client. Company profiles from a domain, hiring signals from ATS boards, Y Combinator companies, Wikidata enrichment, e-mail validation, OpenStreetMap places, market quotes and remote jobs.
+An MCP server with 49 leads, jobs & company data tools for AI agents — Claude Desktop, Cursor, Cline or any MCP client. Company profiles from a domain, hiring signals from ATS boards, Y Combinator companies, Wikidata enrichment, e-mail validation, OpenStreetMap places, market quotes and remote jobs.
 
 **This server uses *your own* Apify API token.** Every tool call runs a [WebDataTools](https://apify.com/webdatatools) Actor under your Apify account and is billed to your Apify credit — pay per result, the price is in each tool description. Your token is only sent to Apify's API.
 
@@ -36,7 +36,7 @@ Add this to `claude_desktop_config.json` (Claude Desktop) or `.cursor/mcp.json` 
 }
 ```
 
-## Tools (48)
+## Tools (49)
 
 | Tool | What it does | Price (free plan) | Backing Actor |
 |---|---|---|---|
@@ -88,6 +88,7 @@ Add this to `claude_desktop_config.json` (Claude Desktop) or `.cursor/mcp.json` 
 | `totaljobs_scraper` | Totaljobs Scraper (UK Jobs, Salaries, Locations) | $0.0012 / job | [Actor](https://apify.com/webdatatools/totaljobs-scraper) |
 | `linkedin_company_scraper` | LinkedIn Company Scraper (Public Company Pages) | $0.0035 / company | [Actor](https://apify.com/webdatatools/linkedin-company-scraper) |
 | `naukrigulf_jobs_scraper` | NaukriGulf Jobs Scraper (Gulf Job Listings) | $0.001 / job | [Actor](https://apify.com/webdatatools/naukrigulf-jobs-scraper) |
+| `propertyfinder_scraper` | Property Finder Scraper (UAE Rent & Sale Listings) | $0.002 / listing | [Actor](https://apify.com/webdatatools/propertyfinder-scraper) |
 
 ## More WebDataTools MCP servers
 
