@@ -40,7 +40,7 @@ Add this to `claude_desktop_config.json` (Claude Desktop) or `.cursor/mcp.json` 
 
 | Tool | What it does | Price (free plan) | Backing Actor |
 |---|---|---|---|
-| `career_site_jobs_api` | Career Site Jobs API (Greenhouse, Lever, Ashby, Workday +1) | $0.003 / job | [Actor](https://apify.com/webdatatools/career-site-jobs-api) |
+| `career_site_jobs_api` | Career Site Jobs API (Greenhouse, Lever, Ashby, Workday +1) | $0.002 / job | [Actor](https://apify.com/webdatatools/career-site-jobs-api) |
 | `workday_jobs_scraper` | Workday Jobs Scraper | $0.001 / job | [Actor](https://apify.com/webdatatools/workday-jobs-scraper) |
 | `google_maps_scraper` | Google Maps Scraper | $0.002 / place | [Actor](https://apify.com/webdatatools/google-maps-scraper) |
 | `2gis_places_scraper` | 2GIS Places Scraper (Phones, Websites, Ratings, Hours) | $0.002 / place | [Actor](https://apify.com/webdatatools/2gis-places-scraper) |
@@ -54,7 +54,7 @@ Add this to `claude_desktop_config.json` (Claude Desktop) or `.cursor/mcp.json` 
 | `market_quotes` | Stock, Crypto & FX Quotes | $0.001 / Quote | [Actor](https://apify.com/webdatatools/market-quotes) |
 | `yahoo_finance_scraper` | Yahoo Finance Scraper (Quotes, Fundamentals, Financials, News) | $0.0015 / symbol | [Actor](https://apify.com/webdatatools/yahoo-finance-scraper) |
 | `dexscreener_scraper` | DexScreener Scraper (DEX Pairs, Prices, Liquidity, Boosts) | $0.0005 / row | [Actor](https://apify.com/webdatatools/dexscreener-scraper) |
-| `polymarket_scraper` | Polymarket Scraper (Prediction Markets, Odds, Volume) | $0.001 / market | [Actor](https://apify.com/webdatatools/polymarket-scraper) |
+| `polymarket_scraper` | Polymarket Scraper (Prediction Markets, Odds, Volume) | $0.00075 / market | [Actor](https://apify.com/webdatatools/polymarket-scraper) |
 | `stocktwits_scraper` | StockTwits Scraper (Messages, Sentiment, Trending) | $0.0005 / message | [Actor](https://apify.com/webdatatools/stocktwits-scraper) |
 | `economic_calendar_scraper` | Economic Calendar Scraper (Forex Events, Impact, Forecasts) | $0.0005 / event | [Actor](https://apify.com/webdatatools/economic-calendar-scraper) |
 | `crypto_fear_greed_index` | Crypto Fear & Greed Index (Daily History, Bitcoin Sentiment) | $0.0005 / day | [Actor](https://apify.com/webdatatools/crypto-fear-greed-index) |
@@ -67,7 +67,7 @@ Add this to `claude_desktop_config.json` (Claude Desktop) or `.cursor/mcp.json` 
 | `dice_jobs_scraper` | Dice Jobs Scraper | $0.001 / job | [Actor](https://apify.com/webdatatools/dice-jobs-scraper) |
 | `autoscout24_scraper` | AutoScout24 Scraper | $0.001 / listing | [Actor](https://apify.com/webdatatools/autoscout24-scraper) |
 | `rightmove_scraper` | Rightmove Scraper | $0.001 / property | [Actor](https://apify.com/webdatatools/rightmove-scraper) |
-| `wellfound_jobs_scraper` | Wellfound Jobs Scraper (AngelList Startup Jobs) | $0.002 / job | [Actor](https://apify.com/webdatatools/wellfound-jobs-scraper) |
+| `wellfound_jobs_scraper` | Wellfound Jobs Scraper (AngelList Startup Jobs) | $0.00149 / job | [Actor](https://apify.com/webdatatools/wellfound-jobs-scraper) |
 | `yandex_maps_scraper` | Yandex Maps Scraper (Places, Ratings, Phones) | $0.002 / place | [Actor](https://apify.com/webdatatools/yandex-maps-scraper) |
 | `craigslist_scraper` | Craigslist Scraper (Listings, Prices, Locations) | $0.001 / listing | [Actor](https://apify.com/webdatatools/craigslist-scraper) |
 | `jobstreet_scraper` | JobStreet Scraper (Malaysia, Singapore, PH, ID + JobsDB) | $0.001 / job | [Actor](https://apify.com/webdatatools/jobstreet-scraper) |

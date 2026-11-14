@@ -65,7 +65,7 @@
   "tools": [
     {
       "name": "career_site_jobs_api",
-      "description": "Career Site Jobs API finds which ATS a company uses (Greenhouse, Lever, Ashby, SmartRecruiters, Workday) from its domain or name and returns its open jobs in one unified format, $3 per 1,000 jobs. Billed to your own Apify account: ~$0.003 per job (Apify free-plan price, lower on paid plans).",
+      "description": "Career Site Jobs API finds which ATS a company uses (Greenhouse, Lever, Ashby, SmartRecruiters, Workday) from its domain or name and returns its open jobs in one unified format, $3 per 1,000 jobs. Billed to your own Apify account: ~$0.002 per job (Apify free-plan price, lower on paid plans).",
       "inputSchema": {
         "type": "object",
         "properties": {
@@ -920,7 +920,7 @@
     },
     {
       "name": "polymarket_scraper",
-      "description": "Scrape Polymarket prediction markets: question, outcomes with live prices (implied probabilities), 24h and total volume, liquidity, bid/ask, end date and event. Rank by volume or liquidity, filter by tag, or search by text. No API key. Billed to your own Apify account: ~$0.001 per market (Apify free-plan price, lower on paid plans).",
+      "description": "Scrape Polymarket prediction markets: question, outcomes with live prices (implied probabilities), 24h and total volume, liquidity, bid/ask, end date and event. Rank by volume or liquidity, filter by tag, or search by text. No API key. Billed to your own Apify account: ~$0.00075 per market (Apify free-plan price, lower on paid plans).",
       "inputSchema": {
         "type": "object",
         "properties": {
@@ -1732,7 +1732,7 @@
     },
     {
       "name": "wellfound_jobs_scraper",
-      "description": "Scrape startup jobs from Wellfound (AngelList Talent) by role and city or remote: title, salary and equity ranges, job type, location, posted date, description, and the company’s size, stage and tagline. No login. Billed to your own Apify account: ~$0.002 per job (Apify free-plan price, lower on paid plans).",
+      "description": "Scrape startup jobs from Wellfound (AngelList Talent) by role and city or remote: title, salary and equity ranges, job type, location, posted date, description, and the company’s size, stage and tagline. No login. Billed to your own Apify account: ~$0.00149 per job (Apify free-plan price, lower on paid plans).",
       "inputSchema": {
         "type": "object",
         "properties": {
