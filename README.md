@@ -42,9 +42,9 @@ Add this to `claude_desktop_config.json` (Claude Desktop) or `.cursor/mcp.json` 
 |---|---|---|---|
 | `career_site_jobs_api` | Career Site Jobs API (Greenhouse, Lever, Ashby, Workday +1) | $0.002 / job | [Actor](https://apify.com/webdatatools/career-site-jobs-api) |
 | `workday_jobs_scraper` | Workday Jobs Scraper | $0.001 / job | [Actor](https://apify.com/webdatatools/workday-jobs-scraper) |
-| `google_maps_scraper` | Google Maps Scraper | $0.002 / place | [Actor](https://apify.com/webdatatools/google-maps-scraper) |
+| `google_maps_scraper` | Google Maps Scraper | $0.00024 / place | [Actor](https://apify.com/webdatatools/google-maps-scraper) |
 | `2gis_places_scraper` | 2GIS Places Scraper (Phones, Websites, Ratings, Hours) | $0.002 / place | [Actor](https://apify.com/webdatatools/2gis-places-scraper) |
-| `linkedin_jobs_scraper` | LinkedIn Jobs Scraper | $0.0015 / job | [Actor](https://apify.com/webdatatools/linkedin-jobs-scraper) |
+| `linkedin_jobs_scraper` | LinkedIn Jobs Scraper | $0.00025 / job | [Actor](https://apify.com/webdatatools/linkedin-jobs-scraper) |
 | `company_360` | Company 360: full company profile from a domain | $0.05 / company | [Actor](https://apify.com/webdatatools/company-360) |
 | `hiring_signals` | Hiring Signals Scraper (Greenhouse, Lever, Ashby, Workable) | $0.002 / result | [Actor](https://apify.com/webdatatools/hiring-signals) |
 | `yc_companies_scraper` | Y Combinator Companies & Founders Scraper | $0.002 / result | [Actor](https://apify.com/webdatatools/yc-companies-scraper) |

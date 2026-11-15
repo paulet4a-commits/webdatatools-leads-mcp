@@ -160,7 +160,7 @@
     },
     {
       "name": "google_maps_scraper",
-      "description": "Google Maps Scraper extracts places from Google Maps search: name, category, address, phone, website, rating, review count, coordinates and today's hours, in any country, no browser, $2 per 1,000 places. Billed to your own Apify account: ~$0.002 per place (Apify free-plan price, lower on paid plans).",
+      "description": "Google Maps Scraper extracts places from Google Maps search: name, category, address, phone, website, rating, review count, coordinates and today's hours, in any country, no browser, $2 per 1,000 places. Billed to your own Apify account: ~$0.00024 per place (Apify free-plan price, lower on paid plans).",
       "inputSchema": {
         "type": "object",
         "properties": {
@@ -303,7 +303,7 @@
     },
     {
       "name": "linkedin_jobs_scraper",
-      "description": "LinkedIn Jobs Scraper returns public job listings from LinkedIn by keywords, location, and filters. Scrape job titles, companies, salaries, descriptions, and applicant counts from LinkedIn's public guest job search API. Billed to your own Apify account: ~$0.0015 per job (Apify free-plan price, lower on paid plans).",
+      "description": "LinkedIn Jobs Scraper returns public job listings from LinkedIn by keywords, location, and filters. Scrape job titles, companies, salaries, descriptions, and applicant counts from LinkedIn's public guest job search API. Billed to your own Apify account: ~$0.00025 per job (Apify free-plan price, lower on paid plans).",
       "inputSchema": {
         "type": "object",
         "properties": {
