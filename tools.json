@@ -180,7 +180,7 @@
     "name": "2gis_places_scraper",
     "actor": "webdatatools~2gis-places-scraper",
     "title": "2GIS Places Scraper (Phones, Websites, Ratings, Hours)",
-    "description": "Scrape businesses from 2GIS search results in Russia, Kazakhstan, UAE and 9 more countries: name, category, address, coordinates, rating, reviews, opening hours, phones, website and social links. Contacts included in the price, no login. Billed to your own Apify account: ~$0.002 per place (Apify free-plan price, lower on paid plans).",
+    "description": "Scrape businesses from 2GIS search results in Russia, Kazakhstan, UAE and 9 more countries: name, category, address, coordinates, rating, reviews, opening hours, phones, website and social links. Contacts included in the price, no login. Billed to your own Apify account: ~$0.00024 per place (Apify free-plan price, lower on paid plans).",
     "inputSchema": {
       "type": "object",
       "properties": {
@@ -259,7 +259,7 @@
       "startUrls"
     ],
     "urlSourceFields": [],
-    "price": "$0.002 / place"
+    "price": "$0.00024 / place"
   },
   {
     "name": "linkedin_jobs_scraper",
@@ -1921,7 +1921,7 @@
     "name": "yandex_maps_scraper",
     "actor": "webdatatools~yandex-maps-scraper",
     "title": "Yandex Maps Scraper (Places, Ratings, Phones)",
-    "description": "Scrape businesses from Yandex Maps by search term and city: name, categories, address, coordinates, rating, reviews, phones, website, social links, opening hours. No login. Billed to your own Apify account: ~$0.002 per place (Apify free-plan price, lower on paid plans).",
+    "description": "Scrape businesses from Yandex Maps by search term and city: name, categories, address, coordinates, rating, reviews, phones, website, social links, opening hours. No login. Billed to your own Apify account: ~$0.00019 per place (Apify free-plan price, lower on paid plans).",
     "inputSchema": {
       "type": "object",
       "properties": {
@@ -1962,7 +1962,7 @@
     },
     "arrayFields": [],
     "urlSourceFields": [],
-    "price": "$0.002 / place"
+    "price": "$0.00019 / place"
   },
   {
     "name": "craigslist_scraper",

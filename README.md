@@ -43,7 +43,7 @@ Add this to `claude_desktop_config.json` (Claude Desktop) or `.cursor/mcp.json` 
 | `career_site_jobs_api` | Career Site Jobs API (Greenhouse, Lever, Ashby, Workday +1) | $0.002 / job | [Actor](https://apify.com/webdatatools/career-site-jobs-api) |
 | `workday_jobs_scraper` | Workday Jobs Scraper | $0.001 / job | [Actor](https://apify.com/webdatatools/workday-jobs-scraper) |
 | `google_maps_scraper` | Google Maps Scraper | $0.00024 / place | [Actor](https://apify.com/webdatatools/google-maps-scraper) |
-| `2gis_places_scraper` | 2GIS Places Scraper (Phones, Websites, Ratings, Hours) | $0.002 / place | [Actor](https://apify.com/webdatatools/2gis-places-scraper) |
+| `2gis_places_scraper` | 2GIS Places Scraper (Phones, Websites, Ratings, Hours) | $0.00024 / place | [Actor](https://apify.com/webdatatools/2gis-places-scraper) |
 | `linkedin_jobs_scraper` | LinkedIn Jobs Scraper | $0.00025 / job | [Actor](https://apify.com/webdatatools/linkedin-jobs-scraper) |
 | `company_360` | Company 360: full company profile from a domain | $0.05 / company | [Actor](https://apify.com/webdatatools/company-360) |
 | `hiring_signals` | Hiring Signals Scraper (Greenhouse, Lever, Ashby, Workable) | $0.002 / result | [Actor](https://apify.com/webdatatools/hiring-signals) |
@@ -68,7 +68,7 @@ Add this to `claude_desktop_config.json` (Claude Desktop) or `.cursor/mcp.json` 
 | `autoscout24_scraper` | AutoScout24 Scraper | $0.001 / listing | [Actor](https://apify.com/webdatatools/autoscout24-scraper) |
 | `rightmove_scraper` | Rightmove Scraper | $0.001 / property | [Actor](https://apify.com/webdatatools/rightmove-scraper) |
 | `wellfound_jobs_scraper` | Wellfound Jobs Scraper (AngelList Startup Jobs) | $0.00149 / job | [Actor](https://apify.com/webdatatools/wellfound-jobs-scraper) |
-| `yandex_maps_scraper` | Yandex Maps Scraper (Places, Ratings, Phones) | $0.002 / place | [Actor](https://apify.com/webdatatools/yandex-maps-scraper) |
+| `yandex_maps_scraper` | Yandex Maps Scraper (Places, Ratings, Phones) | $0.00019 / place | [Actor](https://apify.com/webdatatools/yandex-maps-scraper) |
 | `craigslist_scraper` | Craigslist Scraper (Listings, Prices, Locations) | $0.001 / listing | [Actor](https://apify.com/webdatatools/craigslist-scraper) |
 | `jobstreet_scraper` | JobStreet Scraper (Malaysia, Singapore, PH, ID + JobsDB) | $0.001 / job | [Actor](https://apify.com/webdatatools/jobstreet-scraper) |
 | `infojobs_scraper` | InfoJobs Scraper (Spain Jobs, Salaries, Companies) | $0.001 / job | [Actor](https://apify.com/webdatatools/infojobs-scraper) |
