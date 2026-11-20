@@ -122,7 +122,7 @@
     },
     {
       "name": "workday_jobs_scraper",
-      "description": "Scrape job postings from Workday career sites Billed to your own Apify account: ~$0.001 per job (Apify free-plan price, lower on paid plans).",
+      "description": "Scrape job postings from Workday career sites Billed to your own Apify account: ~$0.00005 per job (Apify free-plan price, lower on paid plans).",
       "inputSchema": {
         "type": "object",
         "properties": {
@@ -976,7 +976,7 @@
     },
     {
       "name": "stocktwits_scraper",
-      "description": "Scrape StockTwits messages for any stock or crypto ticker with Bullish/Bearish sentiment, likes, author stats and the price at posting time — or the current trending symbols with watchlist counts. Public API, no login. Billed to your own Apify account: ~$0.0005 per message (Apify free-plan price, lower on paid plans).",
+      "description": "Scrape StockTwits messages for any stock or crypto ticker with Bullish/Bearish sentiment, likes, author stats and the price at posting time — or the current trending symbols with watchlist counts. Public API, no login. Billed to your own Apify account: ~$0.00014 per message (Apify free-plan price, lower on paid plans).",
       "inputSchema": {
         "type": "object",
         "properties": {
@@ -2125,7 +2125,7 @@
     },
     {
       "name": "zillow_scraper",
-      "description": "Scrape Zillow search results for any city, ZIP or map search: price, address, coordinates, beds, baths, square feet, lot size, home type, days on Zillow, Zestimate and rent Zestimate, tax value, broker, photos, rental building units, sold dates. Billed to your own Apify account: ~$0.001 per home (Apify free-plan price, lower on paid plans).",
+      "description": "Scrape Zillow search results for any city, ZIP or map search: price, address, coordinates, beds, baths, square feet, lot size, home type, days on Zillow, Zestimate and rent Zestimate, tax value, broker, photos, rental building units, sold dates. Billed to your own Apify account: ~$0.00044 per home (Apify free-plan price, lower on paid plans).",
       "inputSchema": {
         "type": "object",
         "properties": {
